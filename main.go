@@ -11,18 +11,15 @@ import (
 )
 
 type Task struct {
-	ID        int
-	Task      string
-	Date      string
-	CreatedAt string
-	UpdatedAt string
+	ID          int
+	Description string
+	Date        string
+	CreatedAt   string
+	UpdatedAt   string
 }
 
 var options = map[string]func(){
-	"help":     showHelp,
-	"llm":      setupLLM,
-	"db":       checkDB,
-	"calendar": syncCalendar,
+	"help": showHelp,
 }
 
 func main() {
@@ -50,54 +47,39 @@ func handleOption(args []string) {
 		fmt.Println("Opción conocida:", option)
 		options[option]()
 	} else {
-		taskDefinition := strings.Join(args, " ")
-		createTask(taskDefinition)
+		taskDescription := strings.Join(args, " ")
+		createTask(taskDescription)
 	}
 }
 
-func setupLLM() {
-	fmt.Println("Setting up LLM")
-}
-
-func checkDB() {
-	if _, err := os.Stat("./todo-cli.db"); os.IsNotExist(err) {
-		fmt.Println("Setting up DB")
-		db, err := gorm.Open(sqlite.Open("./todo-cli.db"), &gorm.Config{})
-		if err != nil {
-			fmt.Println("Error creating DB:", err)
-			panic("Error creating DB")
-		}
-		db.AutoMigrate(&Task{})
-		fmt.Println("DB created")
-	} else {
-		fmt.Println("DB already exists, skipping setup")
+func initDB() *gorm.DB {
+	dbPath := "./todo-cli.db"
+	isNewDatabase := false
+	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+		isNewDatabase = true
 	}
-
-}
-
-func connectDb() *gorm.DB {
-	checkDB()
-	db, err := gorm.Open(sqlite.Open("./todo-cli.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
 	if err != nil {
-		fmt.Println("Error opening DB:", err)
-		panic("Error opening DB")
+		panic("Error opening DB: " + err.Error())
 	}
-	fmt.Println("Connected to DB")
+	if isNewDatabase {
+		fmt.Println("Setting up DB")
+		err = db.AutoMigrate(&Task{})
+		if err != nil {
+			panic("Error migrating DB: " + err.Error())
+		}
+		fmt.Println("📂 DB created and migrated!")
+	}
 	return db
 }
 
-func syncCalendar() {
-	fmt.Println("Syncing calendar")
-}
-
-func createTask(taskDefinition string) {
-	fmt.Println("Creating task:", taskDefinition)
-	db := connectDb()
+func createTask(description string) {
+	db := initDB()
 	task := Task{
-		Task:      taskDefinition,
-		Date:      time.Now().UTC().Format("2006-01-02T15:04:05"),
-		CreatedAt: time.Now().UTC().Format("2006-01-02T15:04:05"),
-		UpdatedAt: time.Now().UTC().Format("2006-01-02T15:04:05"),
+		Description: description,
+		Date:        time.Now().UTC().Format("2006-01-02T15:04:05"),
+		CreatedAt:   time.Now().UTC().Format("2006-01-02T15:04:05"),
+		UpdatedAt:   time.Now().UTC().Format("2006-01-02T15:04:05"),
 	}
 	db.Create(&task)
 	fmt.Println("Task created!!")
