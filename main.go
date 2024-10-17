@@ -5,18 +5,9 @@ import (
 	"os"
 	"strings"
 	"time"
-
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"todo-cli/config"
+	"todo-cli/models"
 )
-
-type Task struct {
-	ID          int
-	Description string
-	Date        string
-	CreatedAt   string
-	UpdatedAt   string
-}
 
 var options = map[string]func(){
 	"help": showHelp,
@@ -52,30 +43,9 @@ func handleOption(args []string) {
 	}
 }
 
-func initDB() *gorm.DB {
-	dbPath := "./todo-cli.db"
-	isNewDatabase := false
-	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
-		isNewDatabase = true
-	}
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
-	if err != nil {
-		panic("Error opening DB: " + err.Error())
-	}
-	if isNewDatabase {
-		fmt.Println("Setting up DB")
-		err = db.AutoMigrate(&Task{})
-		if err != nil {
-			panic("Error migrating DB: " + err.Error())
-		}
-		fmt.Println("📂 DB created and migrated!")
-	}
-	return db
-}
-
 func createTask(description string) {
-	db := initDB()
-	task := Task{
+	db := config.InitDB()
+	task := models.Task{
 		Description: description,
 		Date:        time.Now().UTC().Format("2006-01-02T15:04:05"),
 		CreatedAt:   time.Now().UTC().Format("2006-01-02T15:04:05"),
