@@ -14,7 +14,7 @@ go install github.com/victorgt2406/todo-cli@latest
 tdc go to the market
 ```
 
-### View tasks
+### View tasks WIP
 List all relevant tasks
 ```bash
 tdc l
@@ -24,7 +24,7 @@ List the important tasks
 tdc li
 ```
 
-### Delete tasks
+### Delete tasks WIP
 Remove all tasks
 ```bash
 tdc ra
