@@ -9,13 +9,14 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB_PATH = "./todo-cli.db"
+
 func InitDB() *gorm.DB {
-	dbPath := "./todo-cli.db"
 	isNewDatabase := false
-	if _, err := os.Stat(dbPath); os.IsNotExist(err) {
+	if _, err := os.Stat(DB_PATH); os.IsNotExist(err) {
 		isNewDatabase = true
 	}
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(DB_PATH), &gorm.Config{})
 	if err != nil {
 		panic("Error opening DB: " + err.Error())
 	}
