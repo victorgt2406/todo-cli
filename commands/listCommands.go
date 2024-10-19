@@ -11,16 +11,17 @@ import (
 func Enter(db *gorm.DB, task *models.Task) {
 	db.Model(task).Update("IsDone", !task.IsDone)
 	if task.IsDone {
-		fmt.Println("✅ Task " + task.Description + " completed!!")
+		fmt.Println("[x] " + task.Description)
 	} else {
-		fmt.Println("❌ Task " + task.Description + " not completed!!")
+		fmt.Println("[-] " + task.Description)
 	}
 }
 
 func Edit(db *gorm.DB, task *models.Task) {
+	originalDescription := task.Description
 	description := views.EditTask(task.Description)
 	db.Model(task).Update("Description", description)
-	fmt.Println("Task updated!!")
+	fmt.Println(originalDescription + " -> " + description)
 }
 
 func Delete(db *gorm.DB, task *models.Task) {
