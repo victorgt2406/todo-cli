@@ -1,56 +1,35 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"strings"
-	"time"
-	"todo-cli/config"
-	"todo-cli/models"
+	"todo-cli/commands"
 )
-
-var options = map[string]func(){
-	"help": showHelp,
-}
 
 func main() {
 	args := os.Args[1:]
-	if len(args) == 0 {
-		showHelp()
+
+	if noArgs(args) {
+		commands.Help()
 	} else {
-		handleOption(args)
+		if isCommand(args[0]) {
+			commands.HandleCommand(args)
+		} else {
+			taskDescription := strings.Join(args, " ")
+			commands.CreateTask(taskDescription)
+		}
 	}
 }
 
-func showHelp() {
-	fmt.Println("Welcome to todo-cli (tdc)!")
-	fmt.Println("\n🦙 Using LLMs it will set the date and task for you")
-	fmt.Println("📂 Everything is stored locally in a `sqlite` database")
-	fmt.Println("📅 If you want it can add them to your calendar")
-	fmt.Println("\nUsage:")
-	fmt.Println("  tdc make something for tomorrow")
+func noArgs(args []string) bool {
+	return len(args) == 0
 }
 
-func handleOption(args []string) {
-	option := args[0]
-
-	if _, optionExists := options[option]; optionExists {
-		fmt.Println("Opción conocida:", option)
-		options[option]()
-	} else {
-		taskDescription := strings.Join(args, " ")
-		createTask(taskDescription)
+func isCommand(arg1 string) bool {
+	for command := range commands.Commands {
+		if arg1 == command {
+			return true
+		}
 	}
-}
-
-func createTask(description string) {
-	db := config.InitDB()
-	task := models.Task{
-		Description: description,
-		Date:        time.Now().UTC().Format("2006-01-02T15:04:05"),
-		CreatedAt:   time.Now().UTC().Format("2006-01-02T15:04:05"),
-		UpdatedAt:   time.Now().UTC().Format("2006-01-02T15:04:05"),
-	}
-	db.Create(&task)
-	fmt.Println("Task created!!")
+	return false
 }
