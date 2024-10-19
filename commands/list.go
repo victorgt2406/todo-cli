@@ -15,18 +15,13 @@ func List() {
 	if anyTasks(tasks) {
 		fmt.Println("Your tasks:")
 
-		var taskDescriptions []string
-		for _, task := range tasks {
-			taskDescriptions = append(taskDescriptions, task.Description)
-		}
-
-		selectedTask, err := views.SelectFromList(taskDescriptions)
+		selectedTask, err := views.SelectTask(tasks)
 
 		if err != nil {
 			return
 		}
 
-		fmt.Println("Selected task:", selectedTask)
+		fmt.Println("Selected task:", selectedTask.Description)
 	} else {
 		fmt.Println("No tasks found...")
 	}
