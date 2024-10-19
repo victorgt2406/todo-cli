@@ -5,25 +5,27 @@ import (
 	"todo-cli/models"
 
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/charmbracelet/lipgloss"
 )
 
-func SelectTask(tasks []models.Task) (*models.Task, error) {
+func SelectTask(tasks []models.Task) (*models.Task, string, error) {
 	p := tea.NewProgram(initialTaskModel(tasks))
 	m, err := p.Run()
 	if err != nil {
-		return nil, fmt.Errorf("error running program: %v", err)
+		return nil, "", fmt.Errorf("error running program: %v", err)
 	}
 
 	if m, ok := m.(taskModel); ok && m.selected != -1 {
-		return &tasks[m.selected], nil
+		return &tasks[m.selected], m.command, nil
 	}
-	return nil, fmt.Errorf("no task selected")
+	return nil, "", fmt.Errorf("no task selected")
 }
 
 type taskModel struct {
 	tasks    []models.Task
 	cursor   int
 	selected int
+	command  string
 }
 
 func initialTaskModel(tasks []models.Task) taskModel {
@@ -40,8 +42,9 @@ func (m taskModel) Init() tea.Cmd {
 func (m taskModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
+		m.command = msg.String()
 		switch msg.String() {
-		case "ctrl+c", "q":
+		case "ctrl+c", "q", "esc":
 			return m, tea.Quit
 		case "up", "k":
 			if m.cursor > 0 {
@@ -51,8 +54,9 @@ func (m taskModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			if m.cursor < len(m.tasks)-1 {
 				m.cursor++
 			}
-		case "enter":
+		case "enter", "e", "d": // list commands
 			m.selected = m.cursor
+			fmt.Println("")
 			return m, tea.Quit
 		}
 	}
@@ -67,11 +71,13 @@ func (m taskModel) View() string {
 		if m.cursor == i {
 			cursor = ">"
 		}
-		status := "✗"
+		status := "[-]"
+		description := task.Description
 		if task.IsDone {
-			status = "✓"
+			status = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).Render("[x]")
+			description = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).Render(description)
 		}
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, status, task.Description)
+		s += fmt.Sprintf("%s %s %s\n", cursor, status, description)
 	}
 
 	s += "\nPress q to quit.\n"
