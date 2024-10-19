@@ -1,5 +1,7 @@
 package commands
 
+import "fmt"
+
 var Commands = map[string]func(){
 	"help": Help,
 	"h":    Help,
@@ -14,6 +16,6 @@ func HandleCommand(args []string) {
 	if _, commandExists := Commands[command]; commandExists {
 		Commands[command]()
 	} else {
-		panic("Unknown command: " + command)
+		fmt.Println("Unknown command: " + command)
 	}
 }
