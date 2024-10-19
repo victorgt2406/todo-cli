@@ -8,21 +8,35 @@ import (
 )
 
 func List() {
-	fmt.Println("List")
 	db := configs.InitDB()
 	tasks := []models.Task{}
 	db.Find(&tasks)
-	var taskDescriptions []string
-	for _, task := range tasks {
-		taskDescriptions = append(taskDescriptions, task.Description)
+
+	if anyTasks(tasks) {
+		fmt.Println("Your tasks:")
+
+		var taskDescriptions []string
+		for _, task := range tasks {
+			taskDescriptions = append(taskDescriptions, task.Description)
+		}
+
+		selectedTask, err := views.SelectFromList(taskDescriptions)
+
+		if err != nil {
+			return
+		}
+
+		fmt.Println("Selected task:", selectedTask)
+	} else {
+		fmt.Println("No tasks found...")
 	}
-	selectedTask, err := views.SelectFromList(taskDescriptions)
-	if err != nil {
-		return
-	}
-	fmt.Println("Selected task:", selectedTask)
+
 }
 
 func ListImportant() {
 	fmt.Println("ListImportant")
+}
+
+func anyTasks(tasks []models.Task) bool {
+	return len(tasks) > 0
 }
