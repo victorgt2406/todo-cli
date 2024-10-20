@@ -38,3 +38,10 @@ Remove task by slug
 ```bash
 tdc r [task-name] # ℹ️ help your self using tab ->
 ```
+
+ℹ️ If you're using WSL2 and have Ollama native to Windows:
+``` bash
+# CMD
+netsh interface portproxy add v4tov4 listenport=11434 listenaddress=0.0.0.0 connectport=11434 connectaddress=127.0.0.1
+```
+The only thing you need to do is use the private IP of your Windows machine.
