@@ -5,15 +5,7 @@ import (
 	"todo-cli/configs"
 	"todo-cli/models"
 	"todo-cli/views"
-
-	"gorm.io/gorm"
 )
-
-var ListCommands = map[string]func(db *gorm.DB, task *models.Task){
-	"enter": Enter,
-	"e":     Edit,
-	"d":     Delete,
-}
 
 func List() {
 	db := configs.InitDB()
@@ -21,7 +13,8 @@ func List() {
 	db.Find(&tasks)
 
 	if anyTasks(tasks) {
-		selectedTask, command, err := views.SelectTask(tasks)
+		allowedCommands := getAllowedCommands()
+		selectedTask, command, err := views.ListTasks(tasks, allowedCommands)
 		if err != nil {
 			return
 		}
@@ -39,4 +32,12 @@ func ListImportant() {
 
 func anyTasks(tasks []models.Task) bool {
 	return len(tasks) > 0
+}
+
+func getAllowedCommands() []string {
+	allowedCommands := make([]string, 0, len(ListCommands))
+	for command := range ListCommands {
+		allowedCommands = append(allowedCommands, command)
+	}
+	return allowedCommands
 }

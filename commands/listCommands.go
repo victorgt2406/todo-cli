@@ -8,7 +8,15 @@ import (
 	"gorm.io/gorm"
 )
 
-func Enter(db *gorm.DB, task *models.Task) {
+var ListCommands = map[string]func(db *gorm.DB, task *models.Task){
+	"enter": toggleTaskStatus,    //Enter
+	" ":     toggleTaskStatus,    //Enter
+	"e":     editTaskDescription, //Edit
+	"d":     deleteTask,          //Delete
+	"del":   deleteTask,          //Delete
+}
+
+func toggleTaskStatus(db *gorm.DB, task *models.Task) {
 	db.Model(task).Update("IsDone", !task.IsDone)
 	if task.IsDone {
 		fmt.Println("[x] " + task.Description)
@@ -17,14 +25,15 @@ func Enter(db *gorm.DB, task *models.Task) {
 	}
 }
 
-func Edit(db *gorm.DB, task *models.Task) {
+func editTaskDescription(db *gorm.DB, task *models.Task) {
 	originalDescription := task.Description
 	description := views.EditTask(task.Description)
 	db.Model(task).Update("Description", description)
 	fmt.Println(originalDescription + " -> " + description)
 }
 
-func Delete(db *gorm.DB, task *models.Task) {
+func deleteTask(db *gorm.DB, task *models.Task) {
+	// TODO: Add confirmation
 	db.Delete(task)
-	fmt.Println("Task deleted!!")
+	fmt.Println("Task deleted")
 }

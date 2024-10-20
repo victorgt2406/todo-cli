@@ -10,7 +10,7 @@ func main() {
 	args := os.Args[1:]
 
 	if noArgs(args) {
-		commands.Help()
+		commands.List()
 	} else {
 		if isCommand(args[0]) {
 			commands.HandleCommand(args)
