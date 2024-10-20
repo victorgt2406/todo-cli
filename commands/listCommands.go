@@ -3,7 +3,7 @@ package commands
 import (
 	"fmt"
 	"todo-cli/models"
-	"todo-cli/views"
+	"todo-cli/views/viewTask"
 
 	"gorm.io/gorm"
 )
@@ -27,7 +27,7 @@ func toggleTaskStatus(db *gorm.DB, task *models.Task) {
 
 func editTaskDescription(db *gorm.DB, task *models.Task) {
 	originalDescription := task.Description
-	description := views.EditTask(task.Description)
+	description := viewTask.Task(task.Description)
 	db.Model(task).Update("Description", description)
 	fmt.Println(originalDescription + " -> " + description)
 }
