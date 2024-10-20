@@ -1,4 +1,4 @@
-package views
+package viewTasks
 
 import (
 	"fmt"
@@ -10,15 +10,15 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-func ListTasks(tasks []models.Task, allowedCommands []string) (*models.Task, string, error) {
-	p := tea.NewProgram(initialTaskModel(tasks, allowedCommands))
+func Tasks(tasks []models.Task, allowedCommands []string) (*models.Task, string, error) {
+	p := tea.NewProgram(initialTeaModel(tasks, allowedCommands))
 	m, err := p.Run()
 
 	if err != nil {
 		return nil, "", fmt.Errorf("error running program: %v", err)
 	}
 
-	taskModel := m.(taskModel)
+	taskModel := m.(teaModel)
 	if taskModel.selected == -1 {
 		return nil, "", fmt.Errorf("no task selected")
 	}
@@ -27,7 +27,7 @@ func ListTasks(tasks []models.Task, allowedCommands []string) (*models.Task, str
 
 }
 
-type taskModel struct {
+type teaModel struct {
 	tasks           []models.Task
 	cursor          int
 	selected        int
@@ -35,19 +35,19 @@ type taskModel struct {
 	command         string
 }
 
-func initialTaskModel(tasks []models.Task, allowedCommands []string) taskModel {
-	return taskModel{
+func initialTeaModel(tasks []models.Task, allowedCommands []string) teaModel {
+	return teaModel{
 		tasks:           tasks,
 		allowedCommands: allowedCommands,
 		selected:        -1,
 	}
 }
 
-func (m taskModel) Init() tea.Cmd {
+func (m teaModel) Init() tea.Cmd {
 	return nil
 }
 
-func (m taskModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m teaModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		m.command = msg.String()
@@ -73,7 +73,7 @@ func (m taskModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m taskModel) View() string {
+func (m teaModel) View() string {
 	s := "Select a task:\n\n"
 
 	for i, task := range m.tasks {

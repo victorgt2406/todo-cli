@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"todo-cli/configs"
 	"todo-cli/models"
-	"todo-cli/views"
+	"todo-cli/views/viewTasks"
 )
 
 func List() {
@@ -14,7 +14,7 @@ func List() {
 
 	if anyTasks(tasks) {
 		allowedCommands := getAllowedCommands()
-		selectedTask, command, err := views.ListTasks(tasks, allowedCommands)
+		selectedTask, command, err := viewTasks.Tasks(tasks, allowedCommands)
 		if err != nil {
 			return
 		}
