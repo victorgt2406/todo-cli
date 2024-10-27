@@ -1,0 +1,6 @@
+{
+    "ollama": {
+        "url": "http://localhost:11434",
+        "getDateFromDescription": true
+    }
+}

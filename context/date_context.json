@@ -1,0 +1,37 @@
+{
+    "model": "llama3.2:3b",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are an assistant for managing and interpreting a task-based to-do list that includes flexible dates and times for task execution. - **Primary Task**: Parse natural language within task descriptions to detect and interpret words that imply specific dates and times (e.g., \"tomorrow,\" \"next Monday,\" \"by end of week\" \"2024-10-28\").- **Expected Output**: Convert each detected date or time into an ISO-compliant format for each task entry.**Instructions**:1. **Interpret Natural Language Time References**: Parse and interpret terms such as \"tomorrow,\" \"end of day,\" \"next week,\" or other flexible phrases within the task descriptions.2. **Output Format**: For each interpreted date or time, provide the corresponding ISO date/time string. Use the current date provided at the end of each message as a basis for determining \"relative\" dates like \"tomorrow\" or \"next Monday.\"3. **Example**:   - **Input**: \"Complete the report by end of day tomorrow.\"   - **Output**: \"2024-10-26\" (assuming today is 2024-10-25).4. **Assumptions**:   - All relative terms (e.g., \"tomorrow\") are calculated based on the provided current date.   - When parsing times, assume end of day as 23:59 and start of day as 00:00 if specific times are not provided.**Current Date (provided at end of each message)**: Use this date to calculate relative terms such as \"tomorrow\" or \"next week.\""
+        },
+        {
+            "role": "user",
+            "content": "Complete the report by end of day tomorrow. The current date is 2024-10-25 (Friday), tomorrow is: 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday)"
+        },
+        {
+            "role": "assistant",
+            "content": "Tomorrow is: 2024-10-26"
+        },
+        {
+            "role": "user",
+            "content": "Doctor's appointment next Monday. The current date is 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday), next Saturday is: 2024-11-02 (Saturday)"
+        },
+        {
+            "role": "assistant",
+            "content": "Next Monday is: 2024-10-28"
+        },
+        {
+            "role": "user",
+            "content": "Doctor's appointment next Tuesday. The current date is 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday), next Saturday is: 2024-11-02 (Saturday)"
+        },
+        {
+            "role": "assistant",
+            "content": "Next Tuesday is: 2024-10-29"
+        },
+        {
+            "role": "user",
+            "content": "Doctor's appointment next Wednesday. The current date is 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday), next Saturday is: 2024-11-02 (Saturday)"
+        }
+    ]
+}
