@@ -1,37 +1,33 @@
 {
-    "model": "llama3.2:3b",
+    "model": "llama3.1:8b",
     "messages": [
         {
             "role": "system",
-            "content": "You are an assistant for managing and interpreting a task-based to-do list that includes flexible dates and times for task execution. - **Primary Task**: Parse natural language within task descriptions to detect and interpret words that imply specific dates and times (e.g., \"tomorrow,\" \"next Monday,\" \"by end of week\" \"2024-10-28\").- **Expected Output**: Convert each detected date or time into an ISO-compliant format for each task entry.**Instructions**:1. **Interpret Natural Language Time References**: Parse and interpret terms such as \"tomorrow,\" \"end of day,\" \"next week,\" or other flexible phrases within the task descriptions.2. **Output Format**: For each interpreted date or time, provide the corresponding ISO date/time string. Use the current date provided at the end of each message as a basis for determining \"relative\" dates like \"tomorrow\" or \"next Monday.\"3. **Example**:   - **Input**: \"Complete the report by end of day tomorrow.\"   - **Output**: \"2024-10-26\" (assuming today is 2024-10-25).4. **Assumptions**:   - All relative terms (e.g., \"tomorrow\") are calculated based on the provided current date.   - When parsing times, assume end of day as 23:59 and start of day as 00:00 if specific times are not provided.**Current Date (provided at end of each message)**: Use this date to calculate relative terms such as \"tomorrow\" or \"next week.\""
+            "content": "You are an assistant designed to convert natural language time references into ISO-compliant date formats (YYYY-MM-DD).\n\nYour task:\n1. Interpret time references in the given task description.\n2. Convert the interpreted date to YYYY-MM-DD format.\n\nRules:\n1. Respond ONLY with the date in YYYY-MM-DD format. No other text is allowed.\n2. The user message will always provide the current date and the seven following days for reference.\n3. Use the provided current date to calculate relative dates.\n4. If no valid date can be determined, respond with 'INVALID'.\n\nDate interpretation rules:\n1. 'End of day' is 23:59, 'start of day' is 00:00.\n2. Week starts on Monday.\n3. 'Next [day of week]' refers to the upcoming day, even if it's the same week.\n4. 'End of week' is the upcoming Sunday.\n5. 'End of month' is the last day of the current month.\n6. 'Next month' is the first day of the following month.\n7. For relative periods (e.g., 'in 3 days'), count from the current date inclusively."
         },
         {
             "role": "user",
-            "content": "Complete the report by end of day tomorrow. The current date is 2024-10-25 (Friday), tomorrow is: 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday)"
+            "content": "[Task Description] Doctor's appointment next Wednesday.\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
         },
         {
             "role": "assistant",
-            "content": "Tomorrow is: 2024-10-26"
+            "content": "2024-10-30"
         },
         {
             "role": "user",
-            "content": "Doctor's appointment next Monday. The current date is 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday), next Saturday is: 2024-11-02 (Saturday)"
+            "content": "[Task Description] Go to the grocery store, on friday.\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
         },
         {
             "role": "assistant",
-            "content": "Next Monday is: 2024-10-28"
+            "content": "2024-11-01"
         },
         {
             "role": "user",
-            "content": "Doctor's appointment next Tuesday. The current date is 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday), next Saturday is: 2024-11-02 (Saturday)"
+            "content": "[Task Description] Visit grandma the next Saturday.\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
         },
         {
             "role": "assistant",
-            "content": "Next Tuesday is: 2024-10-29"
-        },
-        {
-            "role": "user",
-            "content": "Doctor's appointment next Wednesday. The current date is 2024-10-26 (Saturday), next Monday is: 2024-10-28 (Monday), next Tuesday is: 2024-10-29 (Tuesday), next Wednesday is: 2024-10-30 (Wednesday), next Thursday is: 2024-10-31 (Thursday), next Friday is: 2024-11-01 (Friday), next Saturday is: 2024-11-02 (Saturday)"
+            "content": "2024-11-02"
         }
     ]
 }

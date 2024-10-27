@@ -9,9 +9,12 @@ import (
 
 type Config struct {
 	Ollama struct {
-		Url                    string `json:"url"`
-		GetDateFromDescription bool   `json:"getDateFromDescription"`
+		Url string `json:"url"`
 	} `json:"ollama"`
+	Features struct {
+		RecognizeDate     bool `json:"recognizeDate"`
+		RecognizeCategory bool `json:"recognizeCategory"`
+	} `json:"features"`
 }
 
 func LoadConfig() Config {

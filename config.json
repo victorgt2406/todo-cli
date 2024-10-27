@@ -1,6 +1,9 @@
 {
     "ollama": {
-        "url": "http://localhost:11434",
-        "getDateFromDescription": true
+        "url": "http://localhost:11434"
+    },
+    "features": {
+        "recognizeDate": true,
+        "recognizeCategory": true
     }
 }

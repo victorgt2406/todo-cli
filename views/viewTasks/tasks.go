@@ -83,11 +83,12 @@ func (m teaModel) View() string {
 		}
 		status := "[-]"
 		description := task.Description
+		date := task.Date
 		if task.IsDone {
 			status = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).Render("[x]")
 			description = lipgloss.NewStyle().Foreground(lipgloss.Color("240")).Render(description)
 		}
-		s += fmt.Sprintf("%s %s %s\n", cursor, status, description)
+		s += fmt.Sprintf("%s %s %s %s\n", cursor, status, description, date)
 	}
 
 	s += "\nPress q to quit.\n"
