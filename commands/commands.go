@@ -5,10 +5,6 @@ import "fmt"
 var Commands = map[string]func(){
 	"help": Help,
 	"h":    Help,
-	"l":    List,
-	"li":   ListImportant,
-	"r":    Remove,
-	"ra":   RemoveAll,
 }
 
 func HandleCommand(args []string) {
