@@ -18,8 +18,8 @@ var colors = map[string]lipgloss.Color{
 	"yellow": lipgloss.Color("3"),
 	"blue":   lipgloss.Color("4"),
 	"purple": lipgloss.Color("5"),
-	"dark":   lipgloss.Color("#1c1c1c"),
-	"light":  lipgloss.Color("#f0f0f0"),
+	"dark":   lipgloss.Color("8"),
+	"light":  lipgloss.Color("15"),
 }
 
 var styles = map[string]lipgloss.Style{
@@ -29,6 +29,8 @@ var styles = map[string]lipgloss.Style{
 	"notChecked":         lipgloss.NewStyle().Foreground(colors["light"]),
 	"footer":             lipgloss.NewStyle().Foreground(colors["blue"]).Italic(true),
 	"title":              lipgloss.NewStyle().Foreground(colors["light"]).Bold(true).Padding(0, 1, 0, 1).Align(lipgloss.Left).Background(colors["blue"]),
+	"alertTitle":         lipgloss.NewStyle().Foreground(colors["light"]).Bold(true).Padding(0, 1, 0, 1).Align(lipgloss.Left).Background(colors["red"]),
+	"error":              lipgloss.NewStyle().Foreground(colors["red"]).Bold(true),
 }
 
 type contextState string
@@ -45,6 +47,7 @@ type model struct {
 	cursor    int
 	context   contextState
 	textInput textinput.Model
+	alert     *string
 }
 
 type TasksUpdatedMsg struct{}
@@ -61,6 +64,7 @@ func InitialModel() model {
 		cursor:    0,
 		context:   contextTasks,
 		textInput: ti,
+		alert:     new(string),
 	}
 }
 
@@ -132,13 +136,11 @@ func textInputUpdate(m model, msg tea.Msg) (model, tea.Cmd) {
 			m.textInput.Blur()
 			m.context = contextTasks
 			return m, tea.Batch(
-				func() tea.Msg { return nil },
 				func() tea.Msg {
 					err := features.SetDateFromDescription(m.db, m.tasks[m.cursor])
 					if err != nil {
-						fmt.Println(err)
+						*m.alert = err.Error()
 					}
-					m.db.Find(&m.tasks)
 					return TasksUpdatedMsg{}
 				},
 			)
@@ -194,8 +196,19 @@ func (m model) View() string {
 		m.textInput.Prompt = "> [ ] "
 		m.textInput.PromptStyle = styles["selectedNotChecked"]
 		m.textInput.TextStyle = styles["selectedNotChecked"]
-		s += m.textInput.View()
+		s += m.textInput.View() + "\n"
 	}
+
+	// Alert
+	if m.alert != nil && *m.alert != "" {
+		alertTitle := "⚠️ Error"
+		alertMessage := *m.alert
+		s += fmt.Sprintf("\n%s\n%s\n",
+			styles["alertTitle"].Render(alertTitle),
+			styles["error"].Render(alertMessage),
+		)
+	}
+
 	// Footer
 	footerMessage := "Press \"q\" to quit, \"e\" to edit, \"n\" to create, \"d\"/\"backspace\"/\"delete\" to delete"
 	if m.context == contextEditTask || m.context == contextNewTask {

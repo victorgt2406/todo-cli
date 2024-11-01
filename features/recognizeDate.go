@@ -21,7 +21,7 @@ func SetDateFromDescription(db *gorm.DB, task models.Task) error {
 	message := createMessageForDate(task.Description)
 	response, err := ollama.Chat(context, message)
 	if err != nil {
-		return fmt.Errorf("error getting date from description")
+		return fmt.Errorf("error when chatting with ollama")
 	}
 	if response != "INVALID" {
 		date, err := time.Parse("2006-01-02", response)

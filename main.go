@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -30,7 +31,10 @@ func main() {
 			taskController := controllers.NewTaskControllerWithDB(db)
 			task := models.Task{Description: strings.Join(args, " ")}
 			task.ID = taskController.CreateTask(task)
-			features.SetDateFromDescription(db, task)
+			err := features.SetDateFromDescription(db, task)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 		}
 	}
 }
