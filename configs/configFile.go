@@ -2,6 +2,7 @@ package configs
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"os"
 	"todo-cli/models"
@@ -35,19 +36,19 @@ func LoadConfig() Config {
 	return config
 }
 
-func LoadContext(contextPath string) models.Context {
+func LoadContext(contextPath string) (models.Context, error) {
 	contextFile, err := os.Open(contextPath)
 	if err != nil {
-		panic("Error opening context file: " + err.Error())
+		return models.Context{}, fmt.Errorf("error opening context file")
 	}
 	defer contextFile.Close()
 
 	byteValue, err := io.ReadAll(contextFile)
 	if err != nil {
-		panic("Error reading context file: " + err.Error())
+		return models.Context{}, fmt.Errorf("error reading context file")
 	}
 
 	var context models.Context
 	json.Unmarshal(byteValue, &context)
-	return context
+	return context, nil
 }

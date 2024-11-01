@@ -18,6 +18,10 @@ func NewTaskController() *TaskController {
 	return &TaskController{db: db}
 }
 
+func NewTaskControllerWithDB(db *gorm.DB) *TaskController {
+	return &TaskController{db: db}
+}
+
 func (c *TaskController) GetAllTasks() []models.Task {
 	var tasks []models.Task
 	c.db.Find(&tasks)
@@ -30,8 +34,7 @@ func (c *TaskController) GetTask(id int) models.Task {
 	return task
 }
 
-func (c *TaskController) CreateTask() int {
-	var task models.Task
+func (c *TaskController) CreateTask(task models.Task) int {
 	c.db.Create(&task)
 	return task.ID
 }

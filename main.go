@@ -5,6 +5,10 @@ import (
 	"os"
 	"strings"
 	"todo-cli/commands"
+	"todo-cli/configs"
+	"todo-cli/controllers"
+	"todo-cli/features"
+	"todo-cli/models"
 	"todo-cli/views/tdc"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -14,7 +18,6 @@ func main() {
 	args := os.Args[1:]
 
 	if noArgs(args) {
-		// commands.List()
 		p := tea.NewProgram(tdc.InitialModel())
 		if _, err := p.Run(); err != nil {
 			log.Fatal(err)
@@ -23,8 +26,11 @@ func main() {
 		if isCommand(args[0]) {
 			commands.HandleCommand(args)
 		} else {
-			taskDescription := strings.Join(args, " ")
-			commands.CreateTask(taskDescription)
+			db := configs.InitDB()
+			taskController := controllers.NewTaskControllerWithDB(db)
+			task := models.Task{Description: strings.Join(args, " ")}
+			task.ID = taskController.CreateTask(task)
+			features.SetDateFromDescription(db, task)
 		}
 	}
 }

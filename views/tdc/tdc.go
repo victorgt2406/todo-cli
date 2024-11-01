@@ -3,6 +3,7 @@ package tdc
 import (
 	"fmt"
 	"todo-cli/configs"
+	"todo-cli/features"
 	"todo-cli/models"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -46,6 +47,8 @@ type model struct {
 	textInput textinput.Model
 }
 
+type TasksUpdatedMsg struct{}
+
 func InitialModel() model {
 	db := configs.InitDB()
 	var tasks []models.Task
@@ -71,13 +74,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch msg.String() {
-			case "ctrl+c", "q", "esc":
+			case "ctrl+c", "q", "Q", "esc":
 				return m, tea.Quit
-			case "up", "k":
+			case "up":
 				if m.cursor > 0 {
 					m.cursor--
 				}
-			case "down", "j":
+			case "down":
 				if m.cursor < len(m.tasks)-1 {
 					m.cursor++
 				}
@@ -86,13 +89,13 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			case "enter":
 				Check(m)
 				return m, tea.Quit
-			case "e":
+			case "e", "E":
 				if len(m.tasks) > 0 {
 					m.context = contextEditTask
 					m.textInput.Focus()
 					m.textInput.SetValue(m.tasks[m.cursor].Description)
 				}
-			case "n":
+			case "n", "N":
 				m.context = contextNewTask
 				m.textInput.Focus()
 				m.textInput.Placeholder = "Create a new task"
@@ -102,6 +105,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 					m.tasks = append(m.tasks[:m.cursor], m.tasks[m.cursor+1:]...)
 				}
 			}
+		case TasksUpdatedMsg:
+			m.db.Find(&m.tasks)
 		}
 	case contextNewTask, contextEditTask:
 		return textInputUpdate(m, msg)
@@ -126,6 +131,17 @@ func textInputUpdate(m model, msg tea.Msg) (model, tea.Cmd) {
 			m.textInput.Reset()
 			m.textInput.Blur()
 			m.context = contextTasks
+			return m, tea.Batch(
+				func() tea.Msg { return nil },
+				func() tea.Msg {
+					err := features.SetDateFromDescription(m.db, m.tasks[m.cursor])
+					if err != nil {
+						fmt.Println(err)
+					}
+					m.db.Find(&m.tasks)
+					return TasksUpdatedMsg{}
+				},
+			)
 		case "esc":
 			m.textInput.Reset()
 			m.textInput.Blur()
@@ -152,7 +168,11 @@ func (m model) View() string {
 		if task.IsDone {
 			checked = "x"
 		}
-		body := fmt.Sprintf("%s (%s)", task.Description, task.Date)
+		dateStr := ""
+		if task.Date != nil {
+			dateStr = fmt.Sprintf(" (%s)", task.Date.Format("Mon 02/01/2006"))
+		}
+		body := fmt.Sprintf("%s%s", task.Description, dateStr)
 		if m.cursor == i && m.context == contextEditTask {
 			body = m.textInput.View()
 		}
