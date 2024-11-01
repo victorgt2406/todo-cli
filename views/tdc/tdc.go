@@ -137,7 +137,7 @@ func textInputUpdate(m model, msg tea.Msg) (model, tea.Cmd) {
 			m.context = contextTasks
 			return m, tea.Batch(
 				func() tea.Msg {
-					err := features.SetDateFromDescription(m.db, m.tasks[m.cursor])
+					err := features.SmartTask(m.db, m.tasks[m.cursor])
 					if err != nil {
 						*m.alert = err.Error()
 					}

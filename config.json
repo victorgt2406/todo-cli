@@ -3,7 +3,6 @@
         "url": "http://localhost:11434"
     },
     "features": {
-        "recognizeDate": true,
-        "recognizeCategory": true
+        "smartTask": false
     }
 }

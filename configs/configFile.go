@@ -2,19 +2,18 @@ package configs
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
 	"os"
-	"todo-cli/models"
 )
+
+var CONFIG Config = LoadConfig()
 
 type Config struct {
 	Ollama struct {
 		Url string `json:"url"`
 	} `json:"ollama"`
 	Features struct {
-		RecognizeDate     bool `json:"recognizeDate"`
-		RecognizeCategory bool `json:"recognizeCategory"`
+		SmartTask bool `json:"smartTask"`
 	} `json:"features"`
 }
 
@@ -34,21 +33,4 @@ func LoadConfig() Config {
 	json.Unmarshal(byteValue, &config)
 
 	return config
-}
-
-func LoadContext(contextPath string) (models.Context, error) {
-	contextFile, err := os.Open(contextPath)
-	if err != nil {
-		return models.Context{}, fmt.Errorf("error opening context file")
-	}
-	defer contextFile.Close()
-
-	byteValue, err := io.ReadAll(contextFile)
-	if err != nil {
-		return models.Context{}, fmt.Errorf("error reading context file")
-	}
-
-	var context models.Context
-	json.Unmarshal(byteValue, &context)
-	return context, nil
 }

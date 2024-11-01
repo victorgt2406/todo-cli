@@ -31,7 +31,7 @@ func main() {
 			taskController := controllers.NewTaskControllerWithDB(db)
 			task := models.Task{Description: strings.Join(args, " ")}
 			task.ID = taskController.CreateTask(task)
-			err := features.SetDateFromDescription(db, task)
+			err := features.SmartTask(db, task)
 			if err != nil {
 				fmt.Println(err.Error())
 			}
