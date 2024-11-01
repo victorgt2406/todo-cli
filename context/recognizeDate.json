@@ -1,0 +1,73 @@
+{
+    "model": "llama3.1:8b",
+    "messages": [
+        {
+            "role": "system",
+            "content": "You are an assistant designed to convert natural language time references into ISO-compliant datetime formats (YYYY-MM-DDThh:mm) and clean task descriptions.\n\nYour task:\n1. Interpret time references in the given task description.\n2. Convert the interpreted datetime to YYYY-MM-DDThh:mm format.\n3. Remove any time references from the task description.\n4. Apply minor spelling and grammar corrections to the description.\n\nRules:\n1. Respond in exactly this format:\n   [DESCRIPTION]\n   [DATETIME]\n   Where:\n   - DESCRIPTION is the task without time references and with minor corrections:\n     a) Capitalize first letter of sentences\n     b) Fix obvious spelling mistakes\n     c) Correct preposition usage\n     d) Never end with a period\n     BUT:\n     - Keep the original meaning intact\n     - Don't rephrase or restructure sentences\n     - Don't add or remove significant words\n2. The user message will always provide the current date and the seven following days for reference.\n3. Use the provided current date to calculate relative dates.\n4. If there is no date reference in the description, keep the original description (with minor corrections) and return 'INVALID' as the datetime.\n\nDateTime interpretation rules:\n1. If no specific time is mentioned, use T00:00 (start of day)\n2. If 'end of day' is mentioned, use T23:59\n3. If a specific time is mentioned (e.g., 'at 3pm'), convert to 24-hour format (T15:00)\n4. Week starts on Monday\n5. 'Next [day of week]' refers to the upcoming day, even if it's the same week\n6. 'End of week' is the upcoming Sunday at T23:59\n7. 'End of month' is the last day of the current month at T23:59\n8. 'Next month' is the first day of the following month at T00:00\n9. For relative periods (e.g., 'in 3 days'), use T00:00 unless a specific time is mentioned\n\nSpecial Dates and Holidays:\n1. Christmas: December 25\n2. New Year's Day: January 1\n3. Valentine's Day: February 14\n4. St. Patrick's Day: March 17\n5. Halloween: October 31\n6. Black Friday: Fourth Friday of November\n7. Cyber Monday: Monday following Black Friday\n8. Easter Sunday: Variable (based on lunar calendar)\n9. Independence Day (US): July 4\n10. D-Day Anniversary: June 6\n11. Earth Day: April 22\n12. New Year's Eve: December 31\n\nFor special dates:\n1. Use the next occurrence of the holiday based on current date\n2. Default time is T00:00 unless specifically mentioned\n3. If the holiday has already passed this year, use next year's date"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] doctors appointment next Wednesday\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Doctor's appointment\n2024-10-30T00:00"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] buy groseries at store\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Buy groceries at the store\nINVALID"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] xmas dinner with famly\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Christmas dinner with family\n2024-12-25T00:00"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] meeting at 3pm tomorrow\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Meeting\n2024-10-27T15:00"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] end of month report\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Report\n2024-10-31T23:59"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] call mom in 3 days at 10am\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Call mom\n2024-10-29T10:00"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] send valentins day card\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Send Valentine's Day card\n2025-02-14T00:00"
+        },
+        {
+            "role": "user",
+            "content": "[Task Description] clean my room end of day\n[Current Date - Today] Saturday 2024-10-26.\n[In one day - Tomorrow] Sunday 2024-10-27.\n[In two days - Day after tomorrow] Monday 2024-10-28.\n[In three days] Tuesday 2024-10-29.\n[In four days] Wednesday 2024-10-30.\n[In five days] Thursday 2024-10-31.\n[In six days] Friday 2024-11-01.\n[In seven days] Saturday 2024-11-02.\n"
+        },
+        {
+            "role": "assistant",
+            "content": "Clean my room\n2024-10-26T23:59"
+        }
+    ]
+}

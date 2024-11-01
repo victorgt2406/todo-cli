@@ -203,7 +203,7 @@ func (m model) View() string {
 	if m.alert != nil && *m.alert != "" {
 		alertTitle := "⚠️ Error"
 		alertMessage := *m.alert
-		s += fmt.Sprintf("\n%s\n%s\n",
+		s += fmt.Sprintf("\n%s %s\n",
 			styles["alertTitle"].Render(alertTitle),
 			styles["error"].Render(alertMessage),
 		)
