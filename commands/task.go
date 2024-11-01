@@ -55,7 +55,8 @@ func UpdateTask(id int, description string) {
 	task := models.Task{}
 	db.First(&task, id)
 	task.Description = description
-	task.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
+	now := time.Now().UTC()
+	task.UpdatedAt = &now
 	db.Save(&task)
 	fmt.Println("Task updated!!")
 }
@@ -69,7 +70,10 @@ func getDateFromDescription(db *gorm.DB, task models.Task) {
 		fmt.Println("Error getting date from description: ", err)
 	}
 	if response != "INVALID" {
-		task.Date = response
+		*task.Date, err = time.Parse("2006-01-02", response)
+		if err != nil {
+			fmt.Println("Error parsing date: ", err)
+		}
 		db.Model(&task).Where("id = ?", task.ID).Update("date", task.Date)
 	}
 }

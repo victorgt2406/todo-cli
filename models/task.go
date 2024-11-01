@@ -6,13 +6,14 @@ type Task struct {
 	ID          int
 	Description string
 	IsDone      bool
-	Date        string
-	CreatedAt   string
-	UpdatedAt   string
+	Date        *time.Time
+	CreatedAt   *time.Time
+	UpdatedAt   *time.Time
 }
 
 func (t *Task) Default() {
 	t.IsDone = false
-	t.CreatedAt = time.Now().UTC().Format(time.RFC3339)
-	t.UpdatedAt = time.Now().UTC().Format(time.RFC3339)
+	now := time.Now().UTC()
+	t.CreatedAt = &now
+	t.UpdatedAt = &now
 }
