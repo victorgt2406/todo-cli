@@ -22,11 +22,12 @@ var colors = map[string]lipgloss.Color{
 }
 
 var styles = map[string]lipgloss.Style{
-	"selected":    lipgloss.NewStyle().Foreground(colors["light"]).Bold(true),
-	"notSelected": lipgloss.NewStyle().Foreground(colors["dark"]),
-	"textInput":   lipgloss.NewStyle().Foreground(colors["yellow"]).Bold(true),
-	"footer":      lipgloss.NewStyle().Foreground(colors["blue"]).Italic(true),
-	"title":       lipgloss.NewStyle().Foreground(colors["light"]).Bold(true).Padding(0, 1, 0, 1).Align(lipgloss.Left).Background(colors["blue"]),
+	"selectedNotChecked": lipgloss.NewStyle().Foreground(colors["yellow"]).Bold(true),
+	"selectedChecked":    lipgloss.NewStyle().Foreground(colors["yellow"]).Faint(true),
+	"checked":            lipgloss.NewStyle().Foreground(colors["dark"]).Faint(true),
+	"notChecked":         lipgloss.NewStyle().Foreground(colors["light"]),
+	"footer":             lipgloss.NewStyle().Foreground(colors["blue"]).Italic(true),
+	"title":              lipgloss.NewStyle().Foreground(colors["light"]).Bold(true).Padding(0, 1, 0, 1).Align(lipgloss.Left).Background(colors["blue"]),
 }
 
 type contextState string
@@ -51,8 +52,6 @@ func InitialModel() model {
 	db.Find(&tasks)
 	ti := textinput.New()
 	ti.Prompt = ""
-	// ti.PromptStyle = styles["selected"]
-	ti.TextStyle = styles["textInput"]
 	return model{
 		db:        db,
 		tasks:     tasks,
@@ -159,16 +158,22 @@ func (m model) View() string {
 		}
 		taskElement := fmt.Sprintf("%s [%s] %s", cursor, checked, body)
 		if m.cursor == i && m.context != contextNewTask {
-			taskElement = styles["selected"].Render(taskElement)
+			if task.IsDone {
+				taskElement = styles["selectedChecked"].Render(taskElement)
+			} else {
+				taskElement = styles["selectedNotChecked"].Render(taskElement)
+			}
+		} else if task.IsDone {
+			taskElement = styles["checked"].Render(taskElement)
 		} else {
-			taskElement = styles["notSelected"].Render(taskElement)
+			taskElement = styles["notChecked"].Render(taskElement)
 		}
 		s += taskElement + "\n"
 	}
 	if m.context == contextNewTask {
-		m.textInput.Prompt = "> "
-		m.textInput.PromptStyle = styles["selected"]
-		m.textInput.TextStyle = styles["selected"]
+		m.textInput.Prompt = "> [ ] "
+		m.textInput.PromptStyle = styles["selectedNotChecked"]
+		m.textInput.TextStyle = styles["selectedNotChecked"]
 		s += m.textInput.View()
 	}
 	// Footer
