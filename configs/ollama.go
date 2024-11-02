@@ -14,8 +14,7 @@ type Ollama struct {
 }
 
 func InitOllama() Ollama {
-	config := LoadConfig()
-	return Ollama{url: config.Ollama.Url}
+	return Ollama{url: CONFIG.Ollama.Url}
 }
 
 func (o Ollama) Chat(context models.Context, message string) (string, error) {

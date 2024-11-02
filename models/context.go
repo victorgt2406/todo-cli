@@ -20,13 +20,13 @@ type Context struct {
 func LoadContext(contextPath string) (Context, error) {
 	contextFile, err := os.Open(contextPath)
 	if err != nil {
-		return Context{}, fmt.Errorf("error opening context file")
+		return Context{}, fmt.Errorf("error opening context file %s", contextPath)
 	}
 	defer contextFile.Close()
 
 	byteValue, err := io.ReadAll(contextFile)
 	if err != nil {
-		return Context{}, fmt.Errorf("error reading context file")
+		return Context{}, fmt.Errorf("error reading context file %s", contextPath)
 	}
 
 	var context Context

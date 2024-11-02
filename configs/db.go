@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var DB_PATH = "./todo-cli.db"
+var DB_PATH = TODO_CLI_PATH + "todo-cli.db"
 
 func InitDB() *gorm.DB {
 	isNewDatabase := false
@@ -21,12 +21,11 @@ func InitDB() *gorm.DB {
 		panic("Error opening DB: " + err.Error())
 	}
 	if isNewDatabase {
-		fmt.Println("Setting up DB")
 		err = db.AutoMigrate(&models.Task{})
 		if err != nil {
 			panic("Error migrating DB: " + err.Error())
 		}
-		fmt.Println("📂 DB created and migrated!")
+		fmt.Printf("📂 DB created and migrated! (%s)\n", DB_PATH)
 	}
 	return db
 }

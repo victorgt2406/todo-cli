@@ -10,7 +10,7 @@ import (
 	"gorm.io/gorm"
 )
 
-const CONTEXT_SMART_TASK = "./context/smartTask.json"
+var CONTEXT_SMART_TASK = configs.TODO_CLI_PATH + "context/smartTask.json"
 
 func SmartTask(db *gorm.DB, task models.Task) error {
 	if !configs.CONFIG.Features.SmartTask {
@@ -21,12 +21,12 @@ func SmartTask(db *gorm.DB, task models.Task) error {
 
 	context, err := models.LoadContext(CONTEXT_SMART_TASK)
 	if err != nil {
-		return fmt.Errorf("[smartTask] error loading smart task context")
+		return fmt.Errorf("[smartTask] error loading smart task context: %s", err.Error())
 	}
 	message := createMessage(task.Description)
 	response, err := ollama.Chat(context, message)
 	if err != nil {
-		return fmt.Errorf("[smartTask] error when chatting with ollama")
+		return fmt.Errorf("[smartTask] error when chatting with ollama: %s", err.Error())
 	}
 	description, date, err := validateResponse(response)
 	if err != nil {
