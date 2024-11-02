@@ -4,7 +4,7 @@ A simple todo cli written in go
 ## Installation
 
 ```bash
-go install github.com/victorgt2406/todo-cli@latest
+curl https://victorgt2406.github.io/todo-cli/install.sh | sh
 ```
 
 ## Usage

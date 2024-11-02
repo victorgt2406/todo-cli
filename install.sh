@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-TODO_CLI_VERSION="0.1.1"
+TODO_CLI_VERSION="0.1"
 RELEASE_URL="https://github.com/victorgt2406/todo-cli/archive/refs/tags/$TODO_CLI_VERSION.zip"
 INSTALL_DIR="$HOME/.todo-cli"
 BIN_DIR="$HOME/.local/bin"
