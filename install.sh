@@ -46,7 +46,6 @@ rm -r "$INSTALL_DIR/todo-cli-$TODO_CLI_VERSION"
 
 # Compile the source code
 echo "Compiling todo-cli..."
-cd "$INSTALL_DIR"  # Change to the installation directory
 if ! command -v go &> /dev/null; then
     echo "Error: 'go' command not found. Please install Go first."
     exit 1
