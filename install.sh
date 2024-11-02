@@ -9,11 +9,23 @@ CMD_NAME="tdc"
 
 # Ensure ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
-    # Check if the PATH export line already exists in .bashrc
-    if ! grep -q "export PATH=\$PATH:\$HOME/.local/bin" "$HOME/.bashrc"; then
-        echo "Adding $BIN_DIR to PATH in ~/.bashrc"
-        echo 'export PATH=$PATH:$HOME/.local/bin' >> "$HOME/.bashrc"
-        source "$HOME/.bashrc"
+    # Determine shell configuration file
+    SHELL_CONFIG=""
+    if [ -n "$ZSH_VERSION" ]; then
+        SHELL_CONFIG="$HOME/.zshrc"
+    elif [ -n "$BASH_VERSION" ]; then
+        SHELL_CONFIG="$HOME/.bashrc"
+    fi
+
+    if [ -n "$SHELL_CONFIG" ]; then
+        # Check if the PATH export line already exists
+        if ! grep -q "export PATH=\$PATH:\$BIN_DIR" "$SHELL_CONFIG"; then
+            echo "Adding $BIN_DIR to PATH in $SHELL_CONFIG"
+            echo 'export PATH=$PATH:$BIN_DIR' >> "$SHELL_CONFIG"
+            source "$SHELL_CONFIG"
+        fi
+    else
+        echo "Warning: Unable to determine shell configuration file"
     fi
 fi
 
@@ -60,3 +72,11 @@ if command -v "$CMD_NAME" &> /dev/null; then
 else
     echo "Something went wrong. Please check your PATH settings."
 fi
+
+# Unset environment variables used during installation
+unset INSTALL_DIR
+unset BIN_DIR
+unset CMD_NAME
+unset RELEASE_URL
+unset TODO_CLI_VERSION
+unset SHELL_CONFIG
