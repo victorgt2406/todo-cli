@@ -2,10 +2,44 @@
 
 # Variables
 TODO_CLI_VERSION="0.1"
-RELEASE_URL="https://github.com/victorgt2406/todo-cli/archive/refs/tags/$TODO_CLI_VERSION.zip"
 INSTALL_DIR="$HOME/.todo-cli"
 BIN_DIR="$HOME/.local/bin"
 CMD_NAME="tdc"
+
+# Detect system architecture and OS
+OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+ARCH=$(uname -m)
+
+# Map architecture names
+case $ARCH in
+    x86_64)
+        ARCH="amd64"
+        ;;
+    aarch64|arm64)
+        ARCH="arm64"
+        ;;
+    *)
+        echo "Unsupported architecture: $ARCH"
+        exit 1
+        ;;
+esac
+
+# Map OS names
+case $OS in
+    linux)
+        OS="linux"
+        ;;
+    darwin)
+        OS="darwin"
+        ;;
+    *)
+        echo "Unsupported operating system: $OS"
+        exit 1
+        ;;
+esac
+
+BINARY_NAME="todo-cli-${OS}-${ARCH}"
+RELEASE_URL="https://github.com/victorgt2406/todo-cli/releases/download/v${TODO_CLI_VERSION}/${BINARY_NAME}"
 
 # Ensure ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
@@ -29,29 +63,12 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
     fi
 fi
 
-# Download and extract the release
-echo "Downloading and installing todo-cli..."
+# Create installation directory
 mkdir -p "$INSTALL_DIR"
-curl -L "$RELEASE_URL" -o "$INSTALL_DIR/release.zip"
-if ! command -v unzip &> /dev/null; then
-    echo "Error: 'unzip' command not found. Please install unzip first."
-    exit 1
-fi
-unzip "$INSTALL_DIR/release.zip" -d "$INSTALL_DIR"
-rm "$INSTALL_DIR/release.zip"
 
-# Move contents from versioned folder to install dir
-mv "$INSTALL_DIR/todo-cli-$TODO_CLI_VERSION"/* "$INSTALL_DIR/"
-rm -r "$INSTALL_DIR/todo-cli-$TODO_CLI_VERSION"
-
-# Compile the source code
-echo "Compiling todo-cli..."
-if ! command -v go &> /dev/null; then
-    echo "Error: 'go' command not found. Please install Go first."
-    exit 1
-fi
-go build -o "$INSTALL_DIR/todo-cli" "$INSTALL_DIR/main.go"
-
+# Download the binary
+echo "Downloading todo-cli binary..."
+curl -L "$RELEASE_URL" -o "$INSTALL_DIR/todo-cli"
 
 # Ensure the binary is executable
 chmod +x "$INSTALL_DIR/todo-cli"
@@ -79,3 +96,6 @@ unset CMD_NAME
 unset RELEASE_URL
 unset TODO_CLI_VERSION
 unset SHELL_CONFIG
+unset OS
+unset ARCH
+unset BINARY_NAME
