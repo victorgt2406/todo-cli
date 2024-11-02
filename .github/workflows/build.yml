@@ -29,9 +29,14 @@ jobs:
         run: |
           go build -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
 
+      - name: Verify build output
+        run: test -f ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }}
+
       - name: Upload Release Binaries
         uses: softprops/action-gh-release@v1
         with:
           files: ./bin/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Notify about the release
+        run: echo "Binaries have been uploaded to the release!"

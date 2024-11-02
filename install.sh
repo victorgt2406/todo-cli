@@ -62,6 +62,8 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
         echo "Warning: Unable to determine shell configuration file"
     fi
 fi
+echo "release URL: $RELEASE_URL"
+echo "Using architecture: $ARCH with the OS: $OS and the binary name: $BINARY_NAME"
 
 # Create installation directory
 mkdir -p "$INSTALL_DIR"
