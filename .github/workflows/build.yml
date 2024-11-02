@@ -1,24 +1,21 @@
-name: Create Release and Build Binaries
+name: Build Binaries
 
 on:
-  push:
-    tags:
-      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+  release:
+    types: [published]
 
 jobs:
-  release:
+  build:
     runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        goos: [linux, darwin, windows]
+        goarch: [amd64, arm64]
+        
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Create Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release create ${{ github.ref_name }} \
-            --title "Release ${{ github.ref_name }}" \
-            --generate-notes
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -26,14 +23,14 @@ jobs:
           go-version: '1.23.1'
 
       - name: Build binaries
+        env:
+          GOOS: ${{ matrix.goos }}
+          GOARCH: ${{ matrix.goarch }}
         run: |
-          for GOOS in linux darwin windows; do
-            for GOARCH in amd64 arm64; do
-              export GOOS=$GOOS
-              export GOARCH=$GOARCH
-              go build -o ./bin/todo-cli-$GOOS-$GOARCH main.go
-            done
-          done
+          go build -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
+
+      - name: Verify build output
+        run: test -f ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }}
 
       - name: Upload Release Binaries
         uses: softprops/action-gh-release@v1
@@ -41,3 +38,5 @@ jobs:
           files: ./bin/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Notify about the release
+        run: echo "Binaries have been uploaded to the release!"
