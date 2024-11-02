@@ -38,7 +38,7 @@ jobs:
       - name: Upload Release Binaries
         uses: softprops/action-gh-release@v1
         with:
-          files: ./bin/*
+          files: bin/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Notify about the release
