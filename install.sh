@@ -3,14 +3,17 @@
 # Variables
 TODO_CLI_VERSION="0.1"
 INSTALL_DIR="$HOME/.todo-cli"
-BIN_DIR="$HOME/.local/bin"
 CMD_NAME="tdc"
+BIN_DIR="$HOME/.local/bin"
+CONFIG_DIR="$INSTALL_DIR"
+CONTEXT_DIR="$INSTALL_DIR/context"
+TEMP_DIR="/tmp/todo-cli-install"
+RELEASE_URL_SOURCE="https://github.com/victorgt2406/todo-cli/archive/refs/tags/${TODO_CLI_VERSION}.zip"
 
 # Detect system architecture and OS
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
 
-# Map architecture names
 case $ARCH in
     x86_64)
         ARCH="amd64"
@@ -24,7 +27,6 @@ case $ARCH in
         ;;
 esac
 
-# Map OS names
 case $OS in
     linux)
         OS="linux"
@@ -39,7 +41,7 @@ case $OS in
 esac
 
 BINARY_NAME="todo-cli-${OS}-${ARCH}"
-RELEASE_URL="https://github.com/victorgt2406/todo-cli/releases/download/v${TODO_CLI_VERSION}/${BINARY_NAME}"
+RELEASE_URL_BIN="https://github.com/victorgt2406/todo-cli/releases/download/${TODO_CLI_VERSION}/${BINARY_NAME}"
 
 # Ensure ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
@@ -62,15 +64,27 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
         echo "Warning: Unable to determine shell configuration file"
     fi
 fi
-echo "release URL: $RELEASE_URL"
+echo "release URL: $RELEASE_URL_BIN"
 echo "Using architecture: $ARCH with the OS: $OS and the binary name: $BINARY_NAME"
 
-# Create installation directory
+# Clean
+rm -f "$BIN_DIR/$CMD_NAME"
+rm -rf "$INSTALL_DIR"
+# Create necessary directories
 mkdir -p "$INSTALL_DIR"
+mkdir -p "$CONFIG_DIR"
+mkdir -p "$CONTEXT_DIR"
+mkdir -p "$TEMP_DIR"
 
-# Download the binary
+# Download binary
 echo "Downloading todo-cli binary..."
-curl -L "$RELEASE_URL" -o "$INSTALL_DIR/todo-cli"
+curl -L "$RELEASE_URL_BIN" -o "$INSTALL_DIR/todo-cli"
+
+# Download and extract config files from source
+echo "Downloading configuration files..."
+curl -L "$RELEASE_URL_SOURCE" -o "$TEMP_DIR/source.zip"
+unzip -j "$TEMP_DIR/source.zip" "todo-cli-${TODO_CLI_VERSION}/config.json" -d "$CONFIG_DIR"
+unzip -j "$TEMP_DIR/source.zip" "todo-cli-${TODO_CLI_VERSION}/context/*.json" -d "$CONTEXT_DIR"
 
 # Ensure the binary is executable
 chmod +x "$INSTALL_DIR/todo-cli"
@@ -95,9 +109,19 @@ fi
 unset INSTALL_DIR
 unset BIN_DIR
 unset CMD_NAME
-unset RELEASE_URL
+unset RELEASE_URL_BIN
+unset RELEASE_URL_SOURCE
 unset TODO_CLI_VERSION
 unset SHELL_CONFIG
 unset OS
 unset ARCH
 unset BINARY_NAME
+
+# Make the command available in current session
+if [ -n "$ZSH_VERSION" ]; then
+    source ~/.zshrc
+elif [ -n "$BASH_VERSION" ]; then
+    source ~/.bashrc
+else
+    echo "Please restart your terminal or run 'source ~/.bashrc' (or equivalent) to use the command."
+fi
