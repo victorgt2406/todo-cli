@@ -9,30 +9,13 @@ permissions:
 
 jobs:
   build:
+    runs-on: ubuntu-latest
+
     strategy:
       matrix:
-        include:
-          - os: ubuntu-latest
-            goos: linux
-            goarch: amd64
-          - os: ubuntu-latest
-            goos: linux
-            goarch: arm64
-          - os: windows-latest
-            goos: windows
-            goarch: amd64
-          - os: windows-latest
-            goos: windows
-            goarch: arm64
-          - os: macos-latest
-            goos: darwin
-            goarch: amd64
-          - os: macos-latest
-            goos: darwin
-            goarch: arm64
-            
-    runs-on: ${{ matrix.os }}
-    
+        goos: [linux, darwin, windows]
+        goarch: [amd64, arm64]
+        
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -42,15 +25,22 @@ jobs:
         with:
           go-version: '1.23.1'
 
+      - name: Install cross-compilation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc gcc-aarch64-linux-gnu
+          sudo apt-get install -y gcc-multilib
+          sudo apt-get install -y mingw-w64
+          sudo apt-get install -y gcc-darwin-arm64
+          sudo apt-get install -y gcc-darwin-x86-64
+
       - name: Build binaries
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: 1
         run: |
-          echo "running on ${{ matrix.os }}"
-          echo "goos ${{ matrix.goos }}"
-          echo "goarch ${{ matrix.goarch }}"
+          echo "gcc version: $(gcc --version)"
           go build -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
 
       - name: Verify build output
@@ -62,3 +52,5 @@ jobs:
           files: bin/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Notify about the release
+        run: echo "Binaries have been uploaded to the release!"
