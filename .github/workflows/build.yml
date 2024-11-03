@@ -48,6 +48,9 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
           CGO_ENABLED: 1
         run: |
+          echo "running on ${{ matrix.os }}"
+          echo "goos ${{ matrix.goos }}"
+          echo "goarch ${{ matrix.goarch }}"
           go build -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
 
       - name: Verify build output
