@@ -5,13 +5,16 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 
 	"github.com/joho/godotenv"
 )
 
 var TODO_CLI_PATH = todoCliPath()
-var CONFIG_PATH = TODO_CLI_PATH + "config.json"
+var CONFIG_PATH = filepath.Join(TODO_CLI_PATH, "config.json")
 var CONFIG Config = LoadConfig()
+var TODO_CLI_APP_NAME = "todo-cli"
+var DB_PATH = filepath.Join(TODO_CLI_PATH, TODO_CLI_APP_NAME+".db")
 
 type Config struct {
 	Database struct {
@@ -56,7 +59,7 @@ func CreateConfig() {
 
 	defaultConfig := Config{}
 	defaultConfig.Database.Provider = "sqlite"
-	defaultConfig.Database.Url = "data/todo.db"
+	defaultConfig.Database.Url = DB_PATH
 	defaultConfig.Ollama.Url = "http://localhost:11434"
 	defaultConfig.Features.SmartTask = true
 
@@ -81,5 +84,5 @@ func todoCliPath() string {
 	if err != nil {
 		panic("Error getting user home directory: " + err.Error())
 	}
-	return homeDir + "/.todo-cli/"
+	return filepath.Join(homeDir, "."+TODO_CLI_APP_NAME)
 }
