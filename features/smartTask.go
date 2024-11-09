@@ -17,14 +17,14 @@ func SmartTask(db *gorm.DB, task models.Task) error {
 		return nil
 	}
 
-	ollama := configs.InitOllama()
+	llm := configs.InitLLM()
 
 	context, err := models.LoadContext(CONTEXT_SMART_TASK)
 	if err != nil {
 		return fmt.Errorf("[smartTask] error loading smart task context: %s", err.Error())
 	}
 	message := createMessage(task.Description)
-	response, err := ollama.Chat(context, message)
+	response, err := llm.Chat(context, message)
 	if err != nil {
 		return fmt.Errorf("[smartTask] error when chatting with ollama: %s", err.Error())
 	}

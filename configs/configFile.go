@@ -21,9 +21,12 @@ type Config struct {
 		Provider string `json:"provider"`
 		Url      string `json:"url"`
 	} `json:"database"`
-	Ollama struct {
-		Url string `json:"url"`
-	} `json:"ollama"`
+	LLM struct {
+		Provider string `json:"provider"`
+		Url      string `json:"url"`
+		Model    string `json:"model"`
+		ApiKey   string `json:"api_key"`
+	} `json:"llm"`
 	Features struct {
 		SmartTask bool `json:"smartTask"`
 	} `json:"features"`
@@ -60,7 +63,10 @@ func CreateConfig() {
 	defaultConfig := Config{}
 	defaultConfig.Database.Provider = "sqlite"
 	defaultConfig.Database.Url = DB_PATH
-	defaultConfig.Ollama.Url = "http://localhost:11434"
+	defaultConfig.LLM.Provider = "ollama"
+	defaultConfig.LLM.Url = "http://localhost:11434"
+	defaultConfig.LLM.Model = "llama3.1:8b"
+	defaultConfig.LLM.ApiKey = ""
 	defaultConfig.Features.SmartTask = true
 
 	jsonData, err := json.MarshalIndent(defaultConfig, "", "    ")
