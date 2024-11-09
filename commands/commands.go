@@ -3,8 +3,10 @@ package commands
 import "fmt"
 
 var Commands = map[string]func(){
-	"help": Help,
-	"h":    Help,
+	"help":   Help,
+	"h":      Help,
+	"config": Config,
+	"c":      Config,
 }
 
 func HandleCommand(args []string) {
