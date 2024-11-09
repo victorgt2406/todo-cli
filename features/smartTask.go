@@ -2,6 +2,7 @@ package features
 
 import (
 	"fmt"
+	"path/filepath"
 	"strings"
 	"time"
 	"todo-cli/configs"
@@ -10,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var CONTEXT_SMART_TASK = configs.TODO_CLI_PATH + "context/smartTask.json"
+var CONTEXT_SMART_TASK_PATH = filepath.Join(configs.TODO_CLI_PATH, "context/smartTask.json")
 
 func SmartTask(db *gorm.DB, task models.Task) error {
 	if !configs.CONFIG.Features.SmartTask {
@@ -19,7 +20,7 @@ func SmartTask(db *gorm.DB, task models.Task) error {
 
 	llm := configs.InitLLM()
 
-	context, err := models.LoadContext(CONTEXT_SMART_TASK)
+	context, err := models.LoadContext(CONTEXT_SMART_TASK_PATH)
 	if err != nil {
 		return fmt.Errorf("[smartTask] error loading smart task context: %s", err.Error())
 	}
