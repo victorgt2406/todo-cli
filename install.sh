@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-TODO_CLI_VERSION="0.1"
+TODO_CLI_VERSION="0.1.1"
 INSTALL_DIR="$HOME/.todo-cli"
 CMD_NAME="tdc"
 BIN_DIR="$HOME/.local/bin"
