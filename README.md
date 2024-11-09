@@ -24,6 +24,10 @@ tdc
 ```
 
 ## Configuration
+### See the path
+``` bash
+tdc config # "tdc c" works too
+```
 ### Database
 The application supports two database providers:
 - SQLite (default)
@@ -35,19 +39,17 @@ You can configure the database provider in the `config.json` file:
 {
     "database": {
         "provider": "sqlite",  // or "postgres"
-        "url": "data/todo.db" // SQLite file path or PostgreSQL connection URL
+        "url": "todo-cli.db" // default sqlite path, but it can be where ever it is needed
     }
 }
 ```
 
-For PostgreSQL, use the connection URL in the `path` field:
+For PostgreSQL, use the connection URL in the `url` field:
 ```json
 {
     "database": {
         "provider": "postgres",
-        "url": "postgres://username:password@localhost:5432/todo"
+        "url": "postgres://username:password@host:port/dbname"
     }
 }
 ```
-
-The PostgreSQL URL format is: `postgres://username:password@host:port/dbname`
