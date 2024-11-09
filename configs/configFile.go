@@ -14,6 +14,10 @@ var CONFIG_PATH = TODO_CLI_PATH + "config.json"
 var CONFIG Config = LoadConfig()
 
 type Config struct {
+	Database struct {
+		Provider string `json:"provider"`
+		Url      string `json:"url"`
+	} `json:"database"`
 	Ollama struct {
 		Url string `json:"url"`
 	} `json:"ollama"`
@@ -23,6 +27,10 @@ type Config struct {
 }
 
 func LoadConfig() Config {
+	if _, err := os.Stat(CONFIG_PATH); os.IsNotExist(err) {
+		CreateConfig()
+	}
+
 	configJson, err := os.Open(CONFIG_PATH)
 	if err != nil {
 		panic("Error opening config.json: " + err.Error())
@@ -38,6 +46,29 @@ func LoadConfig() Config {
 	json.Unmarshal(byteValue, &config)
 
 	return config
+}
+
+func CreateConfig() {
+	err := os.MkdirAll(TODO_CLI_PATH, 0755)
+	if err != nil {
+		panic("Error creating config directory: " + err.Error())
+	}
+
+	defaultConfig := Config{}
+	defaultConfig.Database.Provider = "sqlite"
+	defaultConfig.Database.Url = "data/todo.db"
+	defaultConfig.Ollama.Url = "http://localhost:11434"
+	defaultConfig.Features.SmartTask = true
+
+	jsonData, err := json.MarshalIndent(defaultConfig, "", "    ")
+	if err != nil {
+		panic("Error marshaling config: " + err.Error())
+	}
+
+	err = os.WriteFile(CONFIG_PATH, jsonData, 0644)
+	if err != nil {
+		panic("Error writing config file: " + err.Error())
+	}
 }
 
 func todoCliPath() string {

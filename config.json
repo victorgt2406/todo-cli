@@ -1,4 +1,8 @@
 {
+    "database": {
+        "provider": "sqlite",
+        "url": "data/todo.db"
+    },
     "ollama": {
         "url": "http://localhost:11434"
     },
