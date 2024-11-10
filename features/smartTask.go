@@ -13,7 +13,7 @@ import (
 
 var CONTEXT_SMART_TASK_PATH = filepath.Join(configs.TODO_CLI_PATH, "context/smartTask.json")
 
-func SmartTask(db *gorm.DB, task models.Task) error {
+func SmartTask(db *gorm.DB, task *models.Task) error {
 	if !configs.CONFIG.Features.SmartTask {
 		return nil
 	}

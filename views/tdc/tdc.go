@@ -2,6 +2,8 @@ package tdc
 
 import (
 	"fmt"
+	"sort"
+	"time"
 	"todo-cli/configs"
 	"todo-cli/features"
 	"todo-cli/models"
@@ -56,6 +58,7 @@ func InitialModel() model {
 	db := configs.InitDB()
 	var tasks []models.Task
 	db.Find(&tasks)
+	orderTasks(tasks)
 	ti := textinput.New()
 	ti.Prompt = ""
 	return model{
@@ -129,18 +132,20 @@ func textInputUpdate(m model, msg tea.Msg) (model, tea.Cmd) {
 				m.cursor = len(m.tasks)
 				m.tasks = append(m.tasks, models.Task{})
 			}
+			task := &m.tasks[m.cursor]
 			newDescription := m.textInput.Value()
-			m.tasks[m.cursor].Description = newDescription
-			m.db.Save(&m.tasks[m.cursor])
+			task.Description = newDescription
+			m.db.Save(task)
 			m.textInput.Reset()
 			m.textInput.Blur()
 			m.context = contextTasks
 			return m, tea.Batch(
 				func() tea.Msg {
-					err := features.SmartTask(m.db, m.tasks[m.cursor])
+					err := features.SmartTask(m.db, task)
 					if err != nil {
 						*m.alert = err.Error()
 					}
+					orderTasks(m.tasks)
 					return TasksUpdatedMsg{}
 				},
 			)
@@ -217,4 +222,27 @@ func (m model) View() string {
 	footer := styles["footer"].Render(footerMessage)
 	s += fmt.Sprintf("\n%s\n", footer)
 	return s
+}
+
+func orderTasks(tasks []models.Task) {
+	// Sort by ID to ensure consistent order
+	sort.Slice(tasks, func(i, j int) bool {
+		return tasks[i].ID < tasks[j].ID
+	})
+	// Sort by date
+	now := time.Now()
+	sort.Slice(tasks, func(i, j int) bool {
+		if tasks[i].Date == nil && tasks[j].Date == nil {
+			return false
+		}
+		if tasks[i].Date == nil {
+			return true
+		}
+		if tasks[j].Date == nil {
+			return false
+		}
+		iDiff := tasks[i].Date.Sub(now)
+		jDiff := tasks[j].Date.Sub(now)
+		return iDiff < jDiff
+	})
 }
