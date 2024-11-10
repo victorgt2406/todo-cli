@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Variables
-TODO_CLI_VERSION="0.1"
+TODO_CLI_VERSION=$(curl -s https://api.github.com/repos/victorgt2406/todo-cli/releases/latest | grep -o '"tag_name": "[^"]*' | grep -o '[^"]*$')
 INSTALL_DIR="$HOME/.todo-cli"
 CMD_NAME="tdc"
 BIN_DIR="$HOME/.local/bin"
@@ -64,6 +64,7 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
         echo "Warning: Unable to determine shell configuration file"
     fi
 fi
+echo "Downloading todo-cli version (v$TODO_CLI_VERSION)"
 echo "release URL: $RELEASE_URL_BIN"
 echo "Using architecture: $ARCH with the OS: $OS and the binary name: $BINARY_NAME"
 
