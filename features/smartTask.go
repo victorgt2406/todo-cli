@@ -27,7 +27,7 @@ func SmartTask(db *gorm.DB, task models.Task) error {
 	message := createMessage(task.Description)
 	response, err := llm.Chat(context, message)
 	if err != nil {
-		return fmt.Errorf("[smartTask] error when chatting with ollama: %s", err.Error())
+		return fmt.Errorf("[smartTask] error when chatting with llm: %s", err.Error())
 	}
 	description, date, err := validateResponse(response)
 	if err != nil {
@@ -42,7 +42,7 @@ func SmartTask(db *gorm.DB, task models.Task) error {
 func validateResponse(response string) (string, *time.Time, error) {
 	split := strings.Split(response, "\n")
 	if len(split) != 2 {
-		return "", nil, fmt.Errorf("[smartTask] invalid response format")
+		return "", nil, fmt.Errorf("[smartTask] invalid response format: %s", response)
 	}
 	description, dateStr := split[0], split[1]
 	if dateStr == "INVALID" {

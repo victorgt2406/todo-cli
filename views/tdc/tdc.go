@@ -30,7 +30,7 @@ var styles = map[string]lipgloss.Style{
 	"footer":             lipgloss.NewStyle().Foreground(colors["blue"]).Italic(true),
 	"title":              lipgloss.NewStyle().Foreground(colors["light"]).Bold(true).Padding(0, 1, 0, 1).Align(lipgloss.Left).Background(colors["blue"]),
 	"alertTitle":         lipgloss.NewStyle().Foreground(colors["light"]).Bold(true).Padding(0, 1, 0, 1).Align(lipgloss.Left).Background(colors["red"]),
-	"error":              lipgloss.NewStyle().Foreground(colors["red"]).Bold(true),
+	"error":              lipgloss.NewStyle().Foreground(colors["red"]).Bold(true).Width(80),
 }
 
 type contextState string
