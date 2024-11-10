@@ -18,7 +18,7 @@ func SmartTask(db *gorm.DB, task models.Task) error {
 		return nil
 	}
 
-	llm := configs.InitLLM()
+	llm := configs.NewLLMClient()
 
 	context, err := models.LoadContext(CONTEXT_SMART_TASK_PATH)
 	if err != nil {
