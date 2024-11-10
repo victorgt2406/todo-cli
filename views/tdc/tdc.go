@@ -2,8 +2,6 @@ package tdc
 
 import (
 	"fmt"
-	"sort"
-	"time"
 	"todo-cli/configs"
 	"todo-cli/features"
 	"todo-cli/models"
@@ -57,8 +55,7 @@ type TasksUpdatedMsg struct{}
 func InitialModel() model {
 	db := configs.InitDB()
 	var tasks []models.Task
-	db.Find(&tasks)
-	orderTasks(tasks)
+	findTasks(db, &tasks)
 	ti := textinput.New()
 	ti.Prompt = ""
 	return model{
@@ -113,7 +110,14 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 			}
 		case TasksUpdatedMsg:
-			m.db.Find(&m.tasks)
+			taskSelectedId := m.tasks[m.cursor].ID
+			findTasks(m.db, &m.tasks)
+			for i, task := range m.tasks {
+				if task.ID == taskSelectedId {
+					m.cursor = i
+					break
+				}
+			}
 		}
 	case contextNewTask, contextEditTask:
 		return textInputUpdate(m, msg)
@@ -145,7 +149,6 @@ func textInputUpdate(m model, msg tea.Msg) (model, tea.Cmd) {
 					if err != nil {
 						*m.alert = err.Error()
 					}
-					orderTasks(m.tasks)
 					return TasksUpdatedMsg{}
 				},
 			)
@@ -222,27 +225,4 @@ func (m model) View() string {
 	footer := styles["footer"].Render(footerMessage)
 	s += fmt.Sprintf("\n%s\n", footer)
 	return s
-}
-
-func orderTasks(tasks []models.Task) {
-	// Sort by ID to ensure consistent order
-	sort.Slice(tasks, func(i, j int) bool {
-		return tasks[i].ID < tasks[j].ID
-	})
-	// Sort by date
-	now := time.Now()
-	sort.Slice(tasks, func(i, j int) bool {
-		if tasks[i].Date == nil && tasks[j].Date == nil {
-			return false
-		}
-		if tasks[i].Date == nil {
-			return true
-		}
-		if tasks[j].Date == nil {
-			return false
-		}
-		iDiff := tasks[i].Date.Sub(now)
-		jDiff := tasks[j].Date.Sub(now)
-		return iDiff < jDiff
-	})
 }
