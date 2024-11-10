@@ -34,7 +34,9 @@ func SmartTask(db *gorm.DB, task models.Task) error {
 		return err
 	}
 	task.Description = description
-	task.Date = date
+	if date != nil {
+		task.Date = date
+	}
 	db.Save(&task)
 	return nil
 }
