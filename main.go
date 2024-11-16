@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 	"todo-cli/commands"
-	"todo-cli/configs"
+	"todo-cli/configs/db"
 	"todo-cli/controllers"
 	"todo-cli/features"
 	"todo-cli/models"
@@ -27,7 +27,7 @@ func main() {
 		if isCommand(args[0]) {
 			commands.HandleCommand(args)
 		} else {
-			db := configs.InitDB()
+			db := db.InitDB()
 			taskController := controllers.NewTaskControllerWithDB(db)
 			task := models.Task{Description: strings.Join(args, " ")}
 			task.ID = taskController.CreateTask(task)

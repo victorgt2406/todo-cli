@@ -2,7 +2,7 @@ package tdc
 
 import (
 	"fmt"
-	"todo-cli/configs"
+	"todo-cli/configs/db"
 	"todo-cli/features"
 	"todo-cli/models"
 
@@ -53,7 +53,7 @@ type model struct {
 type TasksUpdatedMsg struct{}
 
 func InitialModel() model {
-	db := configs.InitDB()
+	db := db.InitDB()
 	var tasks []models.Task
 	findTasks(db, &tasks)
 	ti := textinput.New()

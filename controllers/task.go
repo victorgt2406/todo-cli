@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"todo-cli/configs"
+	"todo-cli/configs/db"
 	"todo-cli/models"
 
 	"gorm.io/gorm"
@@ -14,7 +14,7 @@ type TaskController struct {
 // TASK Controller CRUD
 
 func NewTaskController() *TaskController {
-	db := configs.InitDB()
+	db := db.InitDB()
 	return &TaskController{db: db}
 }
 
