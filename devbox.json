@@ -1,8 +1,8 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.1/.schema/devbox.schema.json",
   "packages": [
-    "go@1.23.1",
-    "sqlite@3.46.0"
+    "go@1.25.0",
+    "sqlite@3.50.2"
   ],
   "shell": {
     "init_hook": [
@@ -11,7 +11,8 @@
     "scripts": {
       "test": [
         "echo \"Error: no test specified\" && exit 1"
-      ]
+      ],
+      "compile": "go run main.go"
     }
   }
 }
