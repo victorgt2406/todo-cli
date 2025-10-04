@@ -12,7 +12,7 @@ import (
 )
 
 func (LlmService) AnalizeTask(task models.Task) models.Task {
-	return analizeTaskWithClient(task, "DeepSeekChat")
+	return analizeTaskWithClient(task, "TogetherOpenAiGptOss20b")
 }
 
 func analizeTaskWithClient(task models.Task, clientName string) models.Task {
@@ -23,7 +23,7 @@ func analizeTaskWithClient(task models.Task, clientName string) models.Task {
 
 	analizedTask, err := b.AnalizeTask(
 		ctx,
-		time.Now().Format(time.RFC3339),
+		time.Now().Format("Monday 2006-01-02"),
 		task.Description,
 		b.WithClientRegistry(clientRegistry),
 	)

@@ -4,27 +4,22 @@ class Task {
     Expected date when the task should be done or completed. Format YYYY-MM-DD
   "#)
   isDone bool @description("if the task is done or completed")
-  description string
+  description string @description("the description of the task well formatted")
 }
 
 // Create a function to extract the resume from a string.
-function AnalizeTask(todaysDate: string, resume: string) -> Task {
-  client "DeepSeekChat"
+function AnalizeTask(todaysDate: string, taskDescription: string) -> Task {
+  client "TogetherOpenAiGptOss20b"
   prompt #"
     Today is {{todaysDate}}
 
-    Clean the description:
-    - Remove any text related about dates from the description. 
-      Example: Go to doctor next monday -> Go to the doctor
-    - Correct the grammar of the description, without changing the original meaning.
+    From the following task extract the following information:
 
-    Notes
-    - By default the task is not done or completed, only true when explicitly said in the description.
-    - If there is not a date mentioned in the description, the todo date must be null
-
-    {{ resume }}
+    {{ taskDescription }}
 
     {{ ctx.output_format }}
+
+    * The description should not include date or completion related information
   "#
 }
 
@@ -34,8 +29,8 @@ function AnalizeTask(todaysDate: string, resume: string) -> Task {
 test goToTheMall {
   functions [AnalizeTask]
   args {
-    todaysDate "2025-10-04"
-    resume #"Go to the mall next frinday"#
+    todaysDate "saturday 2025-10-04"
+    taskDescription #"Go to the mall next friday"#
   }
 }
 
@@ -43,7 +38,15 @@ test goToTheMall {
 test byGroceries {
   functions [AnalizeTask]
   args {
-    todaysDate "2025-10-04"
-    resume #"Buy bananas, "#
+    todaysDate "saturday 2025-10-04"
+    taskDescription #"Buy bananas, "#
+  }
+}
+
+test meetingWithJohn {
+  functions [AnalizeTask]
+  args {
+    todaysDate "saturday 2025-10-04"
+    taskDescription #"Meeting with John next thursday"#
   }
 }
