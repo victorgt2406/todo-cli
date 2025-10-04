@@ -1,6 +1,9 @@
 package cli
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func (m model) View() string {
 	switch m.viewContext {
@@ -18,6 +21,7 @@ func (m model) viewTasks() string {
 		cursor := " "  // no cursor
 		checked := " " // not selected
 		description := task.Description
+		todoDate := formatDateToString(task.TodoDate)
 		selected := m.cursor == i && m.viewContext != viewNewTask
 
 		if selected {
@@ -32,7 +36,11 @@ func (m model) viewTasks() string {
 		}
 
 		// Render the row
-		s += fmt.Sprintf("%s [%s] %s\n", cursor, checked, description)
+		s += fmt.Sprintf("%s [%s] %s", cursor, checked, description)
+		if todoDate != nil {
+			s += fmt.Sprintf(" 📅 %s", *todoDate)
+		}
+		s += "\n"
 	}
 
 	if m.viewContext == viewNewTask {
@@ -46,4 +54,15 @@ func (m model) viewTasks() string {
 
 	// Send the UI for rendering
 	return s
+}
+
+func formatDateToString(t *time.Time) *string {
+	if t == nil {
+		return nil
+	}
+	weekday := t.Weekday().String()
+	day := t.Day()
+	month := t.Month().String()
+	result := fmt.Sprintf("%s %d of %s", weekday, day, month)
+	return &result
 }

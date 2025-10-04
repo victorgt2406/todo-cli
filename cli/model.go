@@ -1,8 +1,9 @@
 package cli
 
 import (
-	"todo-cli/db"
+	"todo-cli/config/db"
 	"todo-cli/models"
+	"todo-cli/services/llm"
 	"todo-cli/services/tasksService"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -19,6 +20,7 @@ const (
 // The model is where the state of the cli is stored
 type model struct {
 	tasksService tasksService.TasksService
+	llmService   llm.LlmService
 	dbContext    db.Context
 	tasks        []models.Task
 	cursor       int

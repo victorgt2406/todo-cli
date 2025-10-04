@@ -1,0 +1,32 @@
+package llm
+
+import (
+	"context"
+	"log"
+	"time"
+
+	b "todo-cli/baml_client"
+	"todo-cli/models"
+)
+
+func (LlmService) AnalizeTask(task models.Task) models.Task {
+	ctx := context.Background()
+	analizedTask, err := b.AnalizeTask(ctx, time.Now().Format(time.RFC3339), task.Description)
+	if err != nil {
+		log.Fatal(err)
+	}
+	task.Description = analizedTask.Description
+	task.IsDone = analizedTask.IsDone
+	if analizedTask.TodoDate != nil {
+		task.TodoDate = convertStrTimeToTime(*analizedTask.TodoDate)
+	}
+	return task
+}
+
+func convertStrTimeToTime(strTime string) *time.Time {
+	time, err := time.Parse("2006-01-02", strTime)
+	if err != nil {
+		return nil
+	}
+	return &time
+}

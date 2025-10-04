@@ -3,7 +3,8 @@ package cli
 import (
 	"fmt"
 	"os"
-	"todo-cli/db"
+	"todo-cli/config/db"
+	"todo-cli/services/llm"
 	"todo-cli/services/tasksService"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -14,8 +15,9 @@ import (
 // Start the cli
 func Start(db *gorm.DB, context db.Context) {
 	tasksService := tasksService.InitTaskService(db)
+	llmService := llm.InitLlmService()
 
-	p := tea.NewProgram(initialModel(tasksService, context))
+	p := tea.NewProgram(initialModel(tasksService, context, llmService))
 
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
@@ -24,7 +26,11 @@ func Start(db *gorm.DB, context db.Context) {
 }
 
 // Initial state of the cli
-func initialModel(tasksService tasksService.TasksService, dbContext db.Context) model {
+func initialModel(
+	tasksService tasksService.TasksService,
+	dbContext db.Context,
+	llmService llm.LlmService,
+) model {
 	textInput := textinput.New()
 	textInput.Prompt = ""
 
@@ -34,6 +40,7 @@ func initialModel(tasksService tasksService.TasksService, dbContext db.Context) 
 		dbContext:    dbContext,
 		viewContext:  viewTasks,
 		textInput:    textInput,
+		llmService:   llmService,
 	}
 }
 

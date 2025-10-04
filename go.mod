@@ -11,6 +11,8 @@ require (
 require (
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/boundaryml/baml v0.210.0 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
+	google.golang.org/protobuf v1.36.6 // indirect
 )
 
 require (
