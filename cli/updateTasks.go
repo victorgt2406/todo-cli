@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"todo-cli/services/tasksService"
-
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -26,7 +24,7 @@ func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 		case " ":
 			if len(m.tasks) > 0 {
 				m.tasks[m.cursor].IsDone = !m.tasks[m.cursor].IsDone
-				m.db.Save(&m.tasks[m.cursor])
+				m.tasksService.UpdateTask(m.tasks[m.cursor])
 			}
 
 		case "n", "N":
@@ -42,9 +40,9 @@ func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 		case "d", "delete":
 			if len(m.tasks) > 0 {
-				tasksService.DeleteTask(m.tasks[m.cursor], m.db)
+				m.tasksService.DeleteTask(m.tasks[m.cursor])
 				m.cursor--
-				m.tasks = tasksService.GetTasks(m.db)
+				m.tasks = m.tasksService.GetTasks()
 
 				if m.cursor < 0 {
 					m.cursor = 0

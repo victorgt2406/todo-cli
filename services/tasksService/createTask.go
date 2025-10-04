@@ -2,14 +2,12 @@ package tasksService
 
 import (
 	"todo-cli/models"
-
-	"gorm.io/gorm"
 )
 
-func CreateTask(description string, db *gorm.DB) models.Task {
+func (t TasksService) CreateTask(description string) models.Task {
 	newTask := models.Task{
 		Description: description,
 	}
-	db.Create(&newTask)
+	t.db.Create(&newTask)
 	return newTask
 }

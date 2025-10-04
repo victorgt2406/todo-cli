@@ -13,7 +13,9 @@ import (
 
 // Start the cli
 func Start(db *gorm.DB, context db.Context) {
-	p := tea.NewProgram(initialModel(db, context))
+	tasksService := tasksService.InitTaskService(db)
+
+	p := tea.NewProgram(initialModel(tasksService, context))
 
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
@@ -22,16 +24,16 @@ func Start(db *gorm.DB, context db.Context) {
 }
 
 // Initial state of the cli
-func initialModel(db *gorm.DB, context db.Context) model {
+func initialModel(tasksService tasksService.TasksService, dbContext db.Context) model {
 	textInput := textinput.New()
 	textInput.Prompt = ""
 
 	return model{
-		db:          db,
-		tasks:       tasksService.GetTasks(db),
-		dbContext:   context,
-		viewContext: viewTasks,
-		textInput:   textInput,
+		tasksService: tasksService,
+		tasks:        tasksService.GetTasks(),
+		dbContext:    dbContext,
+		viewContext:  viewTasks,
+		textInput:    textInput,
 	}
 }
 

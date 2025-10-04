@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"todo-cli/services/tasksService"
-
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -33,7 +31,7 @@ func (m model) updateTask(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 	description := m.textInput.Value()
 	if description != "" {
-		newTask := tasksService.CreateTask(description, m.db)
+		newTask := m.tasksService.CreateTask(description)
 		m.tasks = append(m.tasks, newTask)
 		m.cursor = len(m.tasks) - 1
 	}
@@ -50,7 +48,7 @@ func (m model) handleEditTask() (tea.Model, tea.Cmd) {
 
 	if description != "" && len(m.tasks) > 0 {
 		m.tasks[m.cursor].Description = description
-		tasksService.UpdateTask(m.tasks[m.cursor], m.db)
+		m.tasksService.UpdateTask(m.tasks[m.cursor])
 	}
 
 	// Return to tasks view

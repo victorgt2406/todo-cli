@@ -2,12 +2,10 @@ package tasksService
 
 import (
 	"todo-cli/models"
-
-	"gorm.io/gorm"
 )
 
-func GetTasks(db *gorm.DB) []models.Task {
+func (t TasksService) GetTasks() []models.Task {
 	var tasks []models.Task
-	db.Find(&tasks)
+	t.db.Find(&tasks)
 	return tasks
 }

@@ -2,10 +2,8 @@ package tasksService
 
 import (
 	"todo-cli/models"
-
-	"gorm.io/gorm"
 )
 
-func UpdateTask(task models.Task, db *gorm.DB) {
-	db.Save(&task)
+func (t TasksService) UpdateTask(task models.Task) {
+	t.db.Save(&task)
 }
