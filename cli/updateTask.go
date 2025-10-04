@@ -48,7 +48,7 @@ func (m model) handleEditTask() (tea.Model, tea.Cmd) {
 
 	if description != "" && len(m.tasks) > 0 {
 		m.tasks[m.cursor].Description = description
-		m.tasksService.UpdateTask(m.tasks[m.cursor])
+		m.tasks[m.cursor] = m.tasksService.UpdateTask(m.tasks[m.cursor])
 	}
 
 	// Return to tasks view
