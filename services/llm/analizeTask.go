@@ -12,7 +12,7 @@ import (
 )
 
 func (LlmService) AnalizeTask(task models.Task) models.Task {
-	return analizeTaskWithClient(task, "TogetherOpenAiGptOss20b")
+	return analizeTaskWithClient(task, "TogetherLlama3_3_70bTurbo")
 }
 
 func analizeTaskWithClient(task models.Task, clientName string) models.Task {

@@ -40,7 +40,7 @@ client<llm> TogetherLlama3_3_70bTurbo {
   provider "openai-generic"
   options {
     base_url "https://api.together.xyz/v1"
-    model "meta-llama/Llama-3.3-70B-Instruct-Turbo-Free"
+    model "meta-llama/Llama-3.3-70B-Instruct-Turbo"
     api_key env.TOGETHER_API_KEY
   }
 }
