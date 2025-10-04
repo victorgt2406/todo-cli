@@ -3,7 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
-	"todo-cli/config/db"
+	"todo-cli/db"
 	"todo-cli/services/llm"
 	"todo-cli/services/tasksService"
 

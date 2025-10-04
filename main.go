@@ -2,7 +2,7 @@ package main
 
 import (
 	"todo-cli/cli"
-	"todo-cli/config/db"
+	"todo-cli/db"
 
 	"github.com/joho/godotenv"
 )

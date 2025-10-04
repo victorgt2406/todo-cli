@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"todo-cli/config/db"
+	"todo-cli/db"
 	"todo-cli/models"
 	"todo-cli/services/llm"
 	"todo-cli/services/tasksService"
