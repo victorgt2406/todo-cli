@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"todo-cli/db"
-	"todo-cli/models"
+	"todo-cli/services/tasksService"
 
 	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
@@ -23,14 +23,12 @@ func Start(db *gorm.DB, context db.Context) {
 
 // Initial state of the cli
 func initialModel(db *gorm.DB, context db.Context) model {
-	var tasks []models.Task
-	db.Find(&tasks)
 	textInput := textinput.New()
 	textInput.Prompt = ""
 
 	return model{
 		db:          db,
-		tasks:       tasks,
+		tasks:       tasksService.GetTasks(db),
 		dbContext:   context,
 		viewContext: viewTasks,
 		textInput:   textInput,

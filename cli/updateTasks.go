@@ -1,6 +1,10 @@
 package cli
 
-import tea "github.com/charmbracelet/bubbletea"
+import (
+	"todo-cli/services/tasksService"
+
+	tea "github.com/charmbracelet/bubbletea"
+)
 
 func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
@@ -36,7 +40,19 @@ func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.textInput.SetValue(m.tasks[m.cursor].Description)
 				m.textInput.Focus()
 			}
+		case "d", "delete":
+			if len(m.tasks) > 0 {
+				tasksService.DeleteTask(m.tasks[m.cursor], m.db)
+				m.cursor--
+				m.tasks = tasksService.GetTasks(m.db)
+
+				if m.cursor < 0 {
+					m.cursor = 0
+				}
+
+			}
 		}
+
 	}
 	return m, nil
 }
