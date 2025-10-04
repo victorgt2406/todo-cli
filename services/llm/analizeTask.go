@@ -7,11 +7,26 @@ import (
 
 	b "todo-cli/baml_client"
 	"todo-cli/models"
+
+	baml "github.com/boundaryml/baml/engine/language_client_go/pkg"
 )
 
 func (LlmService) AnalizeTask(task models.Task) models.Task {
+	return analizeTaskWithClient(task, "DeepSeekChat")
+}
+
+func analizeTaskWithClient(task models.Task, clientName string) models.Task {
 	ctx := context.Background()
-	analizedTask, err := b.AnalizeTask(ctx, time.Now().Format(time.RFC3339), task.Description)
+
+	clientRegistry := baml.NewClientRegistry()
+	clientRegistry.SetPrimaryClient(clientName)
+
+	analizedTask, err := b.AnalizeTask(
+		ctx,
+		time.Now().Format(time.RFC3339),
+		task.Description,
+		b.WithClientRegistry(clientRegistry),
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
