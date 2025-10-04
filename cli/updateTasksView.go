@@ -1,0 +1,42 @@
+package cli
+
+import tea "github.com/charmbracelet/bubbletea"
+
+func (m model) updateTasksView(msg tea.Msg) (tea.Model, tea.Cmd) {
+	switch msg := msg.(type) {
+	case tea.KeyMsg:
+		switch msg.String() {
+		case "esc", "q", "Q":
+			return m, tea.Quit
+
+		case "up", "k", "K":
+			if m.cursor > 0 {
+				m.cursor--
+			}
+
+		case "down", "j", "J":
+			if m.cursor < len(m.tasks)-1 {
+				m.cursor++
+			}
+
+		case " ":
+			if len(m.tasks) > 0 {
+				m.tasks[m.cursor].IsDone = !m.tasks[m.cursor].IsDone
+				m.db.Save(&m.tasks[m.cursor])
+			}
+
+		case "n", "N":
+			m.viewContext = viewNewTask
+			m.textInput.SetValue("")
+			m.textInput.Focus()
+
+		case "e", "E":
+			if len(m.tasks) > 0 {
+				m.viewContext = viewEditTask
+				m.textInput.SetValue(m.tasks[m.cursor].Description)
+				m.textInput.Focus()
+			}
+		}
+	}
+	return m, nil
+}
