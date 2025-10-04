@@ -13,7 +13,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	}
 	if m.viewContext == viewNewTask || m.viewContext == viewEditTask {
-		return m.updateTaskView(msg)
+		return m.updateTask(msg)
 	}
-	return m.updateTasksView(msg)
+	return m.updateTasks(msg)
 }
