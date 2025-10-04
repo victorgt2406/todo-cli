@@ -2,3 +2,4 @@
 *.http
 .env
 config.json
+baml_client

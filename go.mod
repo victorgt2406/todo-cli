@@ -8,7 +8,10 @@ require (
 	gorm.io/gorm v1.31.0
 )
 
-require github.com/atotto/clipboard v0.1.4 // indirect
+require (
+	github.com/atotto/clipboard v0.1.4 // indirect
+	github.com/boundaryml/baml v0.210.0 // indirect
+)
 
 require (
 	github.com/aymanbagabas/go-osc52/v2 v2.0.1 // indirect

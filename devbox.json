@@ -6,13 +6,21 @@
   ],
   "shell": {
     "init_hook": [
+      "devbox run baml_cli:install",
       "echo 'Welcome to devbox!' > /dev/null"
     ],
     "scripts": {
       "test": [
         "echo \"Error: no test specified\" && exit 1"
       ],
-      "compile": "go run main.go"
+      "compile": [
+        "baml-cli generate",
+        "go run main.go"
+      ],
+      "baml_cli:install": [
+        "go install github.com/boundaryml/baml/baml-cli@latest",
+        "go install golang.org/x/tools/cmd/goimports@latest"
+      ]
     }
   }
 }
