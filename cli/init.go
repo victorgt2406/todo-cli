@@ -5,7 +5,7 @@ import (
 	"os"
 	"todo-cli/config/configFile"
 	"todo-cli/db"
-	"todo-cli/services/llm"
+	"todo-cli/services/llmService"
 	"todo-cli/services/tasksService"
 
 	"github.com/charmbracelet/bubbles/textinput"
@@ -16,7 +16,7 @@ import (
 // Start the cli
 func Start(db *gorm.DB, context db.Context, config configFile.ConfigFile) {
 	tasksService := tasksService.InitTaskService(db)
-	llmService := llm.InitLlmService(config.LlmProvider)
+	llmService := llmService.InitLlmService(config.LlmProvider)
 
 	p := tea.NewProgram(initialModel(tasksService, context, &llmService, config.Features))
 
@@ -30,7 +30,7 @@ func Start(db *gorm.DB, context db.Context, config configFile.ConfigFile) {
 func initialModel(
 	tasksService tasksService.TasksService,
 	dbContext db.Context,
-	llmService *llm.LlmService,
+	llmService *llmService.LlmService,
 	features configFile.Features,
 ) model {
 	textInput := textinput.New()
