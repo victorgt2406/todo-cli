@@ -42,14 +42,17 @@ jobs:
         with:
           go-version: '1.25.0'
 
+      - name: Install BAML CLI
+        run: |
+          go install github.com/boundaryml/baml/baml-cli@latest
+          go install golang.org/x/tools/cmd/goimports@latest
+          baml-cli generate
+  
       - name: Build binaries
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
-          go install github.com/boundaryml/baml/baml-cli@latest
-          go install golang.org/x/tools/cmd/goimports@latest
-          baml-cli generate
           go build -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
 
       - name: Verify build output

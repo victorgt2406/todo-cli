@@ -1,6 +1,54 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "act@latest": {
+      "last_modified": "2025-09-18T16:33:27Z",
+      "resolved": "github:NixOS/nixpkgs/f4b140d5b253f5e2a1ff4e5506edbf8267724bde#act",
+      "source": "devbox-search",
+      "version": "0.2.81",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/f1qcsnyyni43h2hx96g1faqxbcwy4iwn-act-0.2.81",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/f1qcsnyyni43h2hx96g1faqxbcwy4iwn-act-0.2.81"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vb15vi4karvsg5yl3xcgqbs5w28ig748-act-0.2.81",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vb15vi4karvsg5yl3xcgqbs5w28ig748-act-0.2.81"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/blas4k7n7cnv8iqfqfs3a6r11dr98717-act-0.2.81",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/blas4k7n7cnv8iqfqfs3a6r11dr98717-act-0.2.81"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mj23jlma742pf9hmnbwnmxxfy8q5g7hk-act-0.2.81",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mj23jlma742pf9hmnbwnmxxfy8q5g7hk-act-0.2.81"
+        }
+      }
+    },
     "github:NixOS/nixpkgs/nixpkgs-unstable": {
       "last_modified": "2025-09-21T09:21:16Z",
       "resolved": "github:NixOS/nixpkgs/a1f79a1770d05af18111fbbe2a3ab2c42c0f6cd0?lastModified=1758446476&narHash=sha256-5rdAi7CTvM%2FkSs6fHe1bREIva5W3TbImsto%2BdxG4mBo%3D"
