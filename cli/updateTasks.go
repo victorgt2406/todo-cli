@@ -4,6 +4,8 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
+type UpdateTasks struct{}
+
 func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -50,7 +52,8 @@ func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 			}
 		}
-
+	case UpdateTasks:
+		m.tasks = m.tasksService.GetTasks()
 	}
 	return m, nil
 }

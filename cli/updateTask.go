@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"todo-cli/models"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -30,32 +32,47 @@ func (m model) updateTask(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 	description := m.textInput.Value()
+	var taskToAnalize *models.Task = nil
+
 	if description != "" {
 		newTask := m.tasksService.CreateTask(description)
-		newTask = m.tasksService.UpdateTask(m.llmService.AnalizeTask(newTask))
-		m.tasks = append(m.tasks, newTask)
+		taskToAnalize = &newTask
+		m.tasks = append(m.tasks, *taskToAnalize)
 		m.cursor = len(m.tasks) - 1
 	}
 
-	// Return to tasks view
 	m.viewContext = viewTasks
 	m.textInput.SetValue("")
 
-	return m, nil
+	return m, tea.Batch(
+		func() tea.Msg {
+			if taskToAnalize != nil {
+				m.tasksService.UpdateTask(m.llmService.AnalizeTask(*taskToAnalize))
+			}
+			return UpdateTasks{}
+		},
+	)
 }
 
 func (m model) handleEditTask() (tea.Model, tea.Cmd) {
 	description := m.textInput.Value()
+	var taskToAnalize *models.Task = nil
 
 	if description != "" && len(m.tasks) > 0 {
 		m.tasks[m.cursor].Description = description
-		m.tasks[m.cursor] = m.llmService.AnalizeTask(m.tasks[m.cursor])
-		m.tasks[m.cursor] = m.tasksService.UpdateTask(m.tasks[m.cursor])
+		updatedTask := m.tasksService.UpdateTask(m.tasks[m.cursor])
+		taskToAnalize = &updatedTask
 	}
 
-	// Return to tasks view
 	m.viewContext = viewTasks
 	m.textInput.SetValue("")
 
-	return m, nil
+	return m, tea.Batch(
+		func() tea.Msg {
+			if taskToAnalize != nil {
+				m.tasksService.UpdateTask(m.llmService.AnalizeTask(*taskToAnalize))
+			}
+			return UpdateTasks{}
+		},
+	)
 }
