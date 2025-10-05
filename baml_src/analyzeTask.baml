@@ -9,7 +9,7 @@ class Task {
 
 // Create a function to extract the resume from a string.
 function AnalizeTask(todaysDate: string, taskDescription: string) -> Task {
-  client "TogetherOpenAiGptOss20b"
+  client "TogetherLlama3_3_70bTurbo"
   prompt #"
     Today is {{todaysDate}}
 
