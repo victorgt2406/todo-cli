@@ -49,6 +49,7 @@ jobs:
         run: |
           go install github.com/boundaryml/baml/baml-cli@latest
           go install golang.org/x/tools/cmd/goimports@latest
+          baml-cli generate
           go build -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
 
       - name: Verify build output
