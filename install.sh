@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# todo-cli install script
+
+set -e
+set -u
+set -o pipefail
+
 # Variables
 TODO_CLI_VERSION=$(curl -s https://api.github.com/repos/victorgt2406/todo-cli/releases/latest | grep -o '"tag_name": "[^"]*' | grep -o '[^"]*$')
 INSTALL_DIR="$HOME/.todo-cli"
@@ -62,15 +68,23 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
         fi
     else
         echo "Warning: Unable to determine shell configuration file"
+        echo "Please manually add the following line to your shell configuration file:"
+        echo "  export PATH=\$PATH:$BIN_DIR"
     fi
 fi
 echo "Downloading todo-cli version (v$TODO_CLI_VERSION)"
 echo "release URL: $RELEASE_URL_BIN"
 echo "Using architecture: $ARCH with the OS: $OS and the binary name: $BINARY_NAME"
 
-# Clean
-rm -f "$BIN_DIR/$CMD_NAME"
-rm -rf "$INSTALL_DIR"
+# Clean up previous installation (with safety checks)
+if [ -n "$BIN_DIR" ] && [ -n "$CMD_NAME" ]; then
+    rm -f "$BIN_DIR/$CMD_NAME"
+fi
+
+if [ -n "$INSTALL_DIR" ] && [ "$INSTALL_DIR" != "$HOME" ] && [ "$INSTALL_DIR" != "/" ]; then
+    rm -rf "$INSTALL_DIR"
+fi
+
 # Create necessary directories
 mkdir -p "$INSTALL_DIR"
 mkdir -p "$CONFIG_DIR"
@@ -80,12 +94,6 @@ mkdir -p "$TEMP_DIR"
 # Download binary
 echo "Downloading todo-cli binary..."
 curl -L "$RELEASE_URL_BIN" -o "$INSTALL_DIR/todo-cli"
-
-# Download and extract config files from source
-echo "Downloading configuration files..."
-curl -L "$RELEASE_URL_SOURCE" -o "$TEMP_DIR/source.zip"
-unzip -j "$TEMP_DIR/source.zip" "todo-cli-${TODO_CLI_VERSION}/config.json" -d "$CONFIG_DIR"
-unzip -j "$TEMP_DIR/source.zip" "todo-cli-${TODO_CLI_VERSION}/context/*.json" -d "$CONTEXT_DIR"
 
 # Ensure the binary is executable
 chmod +x "$INSTALL_DIR/todo-cli"
@@ -97,7 +105,7 @@ ln -sf "$INSTALL_DIR/todo-cli" "$BIN_DIR/$CMD_NAME"
 # Ensure the new PATH is available in the current session
 export PATH="$PATH:$BIN_DIR"
 
-echo "Installation complete. You can now use the command '$CMD_NAME'."
+echo "Installation completed."
 
 # Check for successful installation
 if command -v "$CMD_NAME" &> /dev/null; then

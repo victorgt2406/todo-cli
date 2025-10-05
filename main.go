@@ -1,53 +1,24 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"strings"
+	"todo-cli/cli"
 	"todo-cli/commands"
-	"todo-cli/configs/db"
-	"todo-cli/controllers"
-	"todo-cli/features"
-	"todo-cli/models"
-	"todo-cli/views/tdc"
+	"todo-cli/config/configFile"
+	"todo-cli/db"
 
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	args := os.Args[1:]
-
-	if noArgs(args) {
-		p := tea.NewProgram(tdc.InitialModel())
-		if _, err := p.Run(); err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		if isCommand(args[0]) {
-			commands.HandleCommand(args)
-		} else {
-			db := db.InitDB()
-			taskController := controllers.NewTaskControllerWithDB(db)
-			task := models.Task{Description: strings.Join(args, " ")}
-			task.ID = taskController.CreateTask(task)
-			err := features.SmartTask(db, &task)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-		}
+	err := godotenv.Load()
+	if err != nil {
+		panic("Error loading .env file")
 	}
-}
 
-func noArgs(args []string) bool {
-	return len(args) == 0
-}
-
-func isCommand(arg1 string) bool {
-	for command := range commands.Commands {
-		if arg1 == command {
-			return true
-		}
+	db, context := db.InitDb()
+	config := configFile.LoadConfig()
+	command := commands.Init(db, context, config)
+	if !command.IsCommand() {
+		cli.Start(db, context, config)
 	}
-	return false
 }

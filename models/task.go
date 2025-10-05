@@ -1,19 +1,20 @@
 package models
 
-import "time"
+import (
+	"time"
+
+	"gorm.io/gorm"
+)
 
 type Task struct {
-	ID          int
+	gorm.Model
 	Description string
 	IsDone      bool
-	Date        *time.Time
-	CreatedAt   *time.Time
-	UpdatedAt   *time.Time
+	TodoDate    *time.Time // pointer so it can be null
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 func (t *Task) Default() {
 	t.IsDone = false
-	now := time.Now().UTC()
-	t.CreatedAt = &now
-	t.UpdatedAt = &now
 }
