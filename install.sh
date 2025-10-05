@@ -12,7 +12,6 @@ INSTALL_DIR="$HOME/.todo-cli"
 CMD_NAME="tdc"
 BIN_DIR="$HOME/.local/bin"
 CONFIG_DIR="$INSTALL_DIR"
-CONTEXT_DIR="$INSTALL_DIR/context"
 TEMP_DIR="/tmp/todo-cli-install"
 RELEASE_URL_SOURCE="https://github.com/victorgt2406/todo-cli/archive/refs/tags/${TODO_CLI_VERSION}.zip"
 
@@ -88,7 +87,6 @@ fi
 # Create necessary directories
 mkdir -p "$INSTALL_DIR"
 mkdir -p "$CONFIG_DIR"
-mkdir -p "$CONTEXT_DIR"
 mkdir -p "$TEMP_DIR"
 
 # Download binary
