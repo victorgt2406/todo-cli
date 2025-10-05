@@ -5,6 +5,7 @@ import (
 	"todo-cli/commands"
 	"todo-cli/config/configFile"
 	"todo-cli/db"
+	_ "todo-cli/internal/env"
 )
 
 func main() {
