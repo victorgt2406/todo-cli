@@ -32,6 +32,7 @@ func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 	description := m.textInput.Value()
 	if description != "" {
 		newTask := m.tasksService.CreateTask(description)
+		newTask = m.tasksService.UpdateTask(m.llmService.AnalizeTask(newTask))
 		m.tasks = append(m.tasks, newTask)
 		m.cursor = len(m.tasks) - 1
 	}
