@@ -11,15 +11,32 @@ import (
 	baml "github.com/boundaryml/baml/engine/language_client_go/pkg"
 )
 
-func (LlmService) AnalizeTask(task models.Task) models.Task {
-	return analizeTaskWithClient(task, "TogetherLlama3_3_70bTurbo")
+func (llmService *LlmService) AnalizeTask(task models.Task) models.Task {
+	clientRegistry := llmService.getCustomClientRegistry()
+	return analizeTaskWithClient(task, clientRegistry)
 }
 
-func analizeTaskWithClient(task models.Task, clientName string) models.Task {
-	ctx := context.Background()
+func (llmService *LlmService) getCustomClientRegistry() *baml.ClientRegistry {
+	llmService.once.Do(func() {
+		clientRegistry := baml.NewClientRegistry()
 
-	clientRegistry := baml.NewClientRegistry()
-	clientRegistry.SetPrimaryClient(clientName)
+		options := map[string]any{
+			"base_url": llmService.url,
+			"model":    llmService.model,
+			"api_key":  llmService.apiKey,
+		}
+
+		clientRegistry.AddLlmClient("customTodoCliProvider", "openai-generic", options)
+		clientRegistry.SetPrimaryClient("customTodoCliProvider")
+
+		llmService.clientRegistry = clientRegistry
+	})
+
+	return llmService.clientRegistry
+}
+
+func analizeTaskWithClient(task models.Task, clientRegistry *baml.ClientRegistry) models.Task {
+	ctx := context.Background()
 
 	analizedTask, err := b.AnalizeTask(
 		ctx,

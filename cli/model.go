@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"todo-cli/config/configFile"
 	"todo-cli/db"
 	"todo-cli/models"
 	"todo-cli/services/llm"
@@ -20,7 +21,8 @@ const (
 // The model is where the state of the cli is stored
 type model struct {
 	tasksService tasksService.TasksService
-	llmService   llm.LlmService
+	llmService   *llm.LlmService
+	features     configFile.Features
 	dbContext    db.Context
 	tasks        []models.Task
 	cursor       int

@@ -36,9 +36,12 @@ func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 
 	if description != "" {
 		newTask := m.tasksService.CreateTask(description)
-		taskToAnalize = &newTask
-		m.tasks = append(m.tasks, *taskToAnalize)
+		m.tasks = append(m.tasks, newTask)
 		m.cursor = len(m.tasks) - 1
+
+		if m.features.SmartTask {
+			taskToAnalize = &newTask
+		}
 	}
 
 	m.viewContext = viewTasks
@@ -61,7 +64,10 @@ func (m model) handleEditTask() (tea.Model, tea.Cmd) {
 	if description != "" && len(m.tasks) > 0 {
 		m.tasks[m.cursor].Description = description
 		updatedTask := m.tasksService.UpdateTask(m.tasks[m.cursor])
-		taskToAnalize = &updatedTask
+
+		if m.features.SmartTask {
+			taskToAnalize = &updatedTask
+		}
 	}
 
 	m.viewContext = viewTasks

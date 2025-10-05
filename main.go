@@ -2,6 +2,7 @@ package main
 
 import (
 	"todo-cli/cli"
+	"todo-cli/config/configFile"
 	"todo-cli/db"
 
 	"github.com/joho/godotenv"
@@ -14,5 +15,6 @@ func main() {
 	}
 
 	db, context := db.InitDb()
-	cli.Start(db, context)
+	config := configFile.LoadConfig()
+	cli.Start(db, context, config)
 }

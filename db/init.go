@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
+	"todo-cli/config"
 	"todo-cli/models"
 
 	"gorm.io/driver/sqlite"
@@ -18,11 +19,10 @@ const (
 	localStorage  Context = "local"
 )
 
-const DATABASE_FILE_NAME = ".todo_cli.db"
+const DATABASE_FILE_NAME = "todo-cli.db"
 
 func InitDb() (*gorm.DB, Context) {
 	dbPath, storageContext, isNewDatabase := whichDatabase()
-
 	db := openDatabase(dbPath)
 
 	if isNewDatabase {
@@ -32,22 +32,13 @@ func InitDb() (*gorm.DB, Context) {
 	return db, storageContext
 }
 
-func getGlobalDatabasePath() string {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		panic("Failed to get user home directory: " + err.Error())
-	}
-	return filepath.Join(homeDir, DATABASE_FILE_NAME)
-}
-
 func whichDatabase() (string, Context, bool) {
-	localDatabase := "./" + DATABASE_FILE_NAME
-
+	localDatabase := filepath.Join(config.GetLocalAppDir(), DATABASE_FILE_NAME)
 	if _, err := os.Stat(localDatabase); err == nil {
 		return localDatabase, localStorage, false
 	}
 
-	globalDatabase := getGlobalDatabasePath()
+	globalDatabase := filepath.Join(config.GetGlobalAppDir(), DATABASE_FILE_NAME)
 	if _, err := os.Stat(globalDatabase); err == nil {
 		return globalDatabase, globalStorage, false
 	}
@@ -68,5 +59,5 @@ func migrateDatabase(db *gorm.DB, dbPath string) {
 	if err != nil {
 		panic("Error when migrating: " + err.Error())
 	}
-	fmt.Printf("📂 Your sqlite database has been created! (%s)\n", dbPath)
+	fmt.Printf("📂 Sqlite database created at\t(%s)\n", dbPath)
 }

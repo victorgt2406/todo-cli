@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"todo-cli/config/configFile"
 	"todo-cli/db"
 	"todo-cli/services/llm"
 	"todo-cli/services/tasksService"
@@ -13,11 +14,11 @@ import (
 )
 
 // Start the cli
-func Start(db *gorm.DB, context db.Context) {
+func Start(db *gorm.DB, context db.Context, config configFile.ConfigFile) {
 	tasksService := tasksService.InitTaskService(db)
-	llmService := llm.InitLlmService()
+	llmService := llm.InitLlmService(config.LlmProvider)
 
-	p := tea.NewProgram(initialModel(tasksService, context, llmService))
+	p := tea.NewProgram(initialModel(tasksService, context, &llmService, config.Features))
 
 	if _, err := p.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
@@ -29,7 +30,8 @@ func Start(db *gorm.DB, context db.Context) {
 func initialModel(
 	tasksService tasksService.TasksService,
 	dbContext db.Context,
-	llmService llm.LlmService,
+	llmService *llm.LlmService,
+	features configFile.Features,
 ) model {
 	textInput := textinput.New()
 	textInput.Prompt = ""
@@ -41,6 +43,7 @@ func initialModel(
 		viewContext:  viewTasks,
 		textInput:    textInput,
 		llmService:   llmService,
+		features:     features,
 	}
 }
 
