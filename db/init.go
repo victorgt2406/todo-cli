@@ -1,13 +1,6 @@
 package db
 
 import (
-	"fmt"
-	"os"
-	"path/filepath"
-
-	"todo-cli/config"
-	"todo-cli/models"
-
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -33,16 +26,15 @@ func InitDb() (*gorm.DB, Context) {
 }
 
 func whichDatabase() (string, Context, bool) {
-	localDatabase := filepath.Join(config.GetLocalAppDir(), DATABASE_FILE_NAME)
-	if _, err := os.Stat(localDatabase); err == nil {
+	localDatabase := LocalDbPath()
+	globalDatabase := GlobalDbPath()
+
+	if dbExists(localDatabase) {
 		return localDatabase, localStorage, false
 	}
-
-	globalDatabase := filepath.Join(config.GetGlobalAppDir(), DATABASE_FILE_NAME)
-	if _, err := os.Stat(globalDatabase); err == nil {
+	if dbExists(globalDatabase) {
 		return globalDatabase, globalStorage, false
 	}
-
 	return globalDatabase, globalStorage, true
 }
 
@@ -52,12 +44,4 @@ func openDatabase(dbPath string) *gorm.DB {
 		panic("Error when opening the database: " + err.Error())
 	}
 	return db
-}
-
-func migrateDatabase(db *gorm.DB, dbPath string) {
-	err := db.AutoMigrate(&models.Task{})
-	if err != nil {
-		panic("Error when migrating: " + err.Error())
-	}
-	fmt.Printf("📂 Sqlite database created at\t(%s)\n", dbPath)
 }
