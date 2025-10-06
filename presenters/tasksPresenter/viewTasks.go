@@ -22,6 +22,7 @@ func (t TasksPresenter) Render(p RenderProps) string {
 
 	// Tasks list
 	isCompletedTasks := false
+	isNewTaskInput := false
 	for i, task := range p.Tasks {
 		description := task.Description
 		if p.ViewContext == models.ViewEditTask && p.Cursor == i {
@@ -29,11 +30,11 @@ func (t TasksPresenter) Render(p RenderProps) string {
 		}
 		if task.IsDone && !isCompletedTasks {
 			if p.ViewContext == models.ViewNewTask {
-				p.TextInput.Prompt = "> [ ] "
-				s += p.TextInput.View() + "\n"
+				s += t.newTaskInput(p.TextInput)
 			}
 			s += "\nCompleted Tasks:\n"
 			isCompletedTasks = true
+			isNewTaskInput = true
 		}
 		s += t.task(taskProps{
 			description: description,
@@ -43,6 +44,10 @@ func (t TasksPresenter) Render(p RenderProps) string {
 			viewContext: p.ViewContext,
 		})
 		s += "\n"
+	}
+
+	if !isNewTaskInput && p.ViewContext == models.ViewNewTask {
+		s += t.newTaskInput(p.TextInput)
 	}
 
 	// The footer
@@ -93,6 +98,11 @@ func (t TasksPresenter) task(p taskProps) string {
 	}
 	s = utils.Styles["task"].Render(s)
 	return s
+}
+
+func (t TasksPresenter) newTaskInput(textInput textinput.Model) string {
+	textInput.Prompt = "> [ ] "
+	return textInput.View() + "\n"
 }
 
 func (t TasksPresenter) footer() string {
