@@ -9,10 +9,14 @@ import (
 )
 
 func main() {
-	db, context := db.InitDb()
+	db, dbContext := db.InitDb()
 	config := configFile.LoadConfig()
-	command := commands.Init(db, context, config)
+	command := commands.Init(db, dbContext, config)
 	if !command.IsCommand() {
-		cli.Start(db, context, config)
+		cli.Start(cli.TodoCliStartProps{
+			Db:        db,
+			DbContext: dbContext,
+			Config:    config,
+		})
 	}
 }
