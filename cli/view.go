@@ -16,8 +16,10 @@ func (m model) viewTasks() string {
 	// The header
 	s := "Todo List\n\n"
 
-	// Iterate over our choices
-	for i, task := range m.tasks {
+	tasks := m.getTasks()
+
+	// Tasks list
+	for i, task := range tasks {
 		cursor := " "  // no cursor
 		checked := " " // not selected
 		description := task.Description

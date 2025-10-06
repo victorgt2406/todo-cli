@@ -33,11 +33,12 @@ func (m model) updateTask(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 	description := m.textInput.Value()
 	var taskToAnalize *models.Task = nil
+	tasks := m.getTasks()
 
 	if description != "" {
 		newTask := m.tasksService.CreateTask(description)
-		m.tasks = append(m.tasks, newTask)
-		m.cursor = len(m.tasks) - 1
+		tasks = append(tasks, newTask)
+		m.cursor = len(tasks) - 1
 
 		if m.features.SmartTask {
 			taskToAnalize = &newTask
@@ -60,10 +61,11 @@ func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 func (m model) handleEditTask() (tea.Model, tea.Cmd) {
 	description := m.textInput.Value()
 	var taskToAnalize *models.Task = nil
+	tasks := m.getTasks()
 
-	if description != "" && len(m.tasks) > 0 {
-		m.tasks[m.cursor].Description = description
-		updatedTask := m.tasksService.UpdateTask(m.tasks[m.cursor])
+	if description != "" && len(tasks) > 0 {
+		tasks[m.cursor].Description = description
+		updatedTask := m.tasksService.UpdateTask(tasks[m.cursor])
 
 		if m.features.SmartTask {
 			taskToAnalize = &updatedTask

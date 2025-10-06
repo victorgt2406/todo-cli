@@ -3,7 +3,6 @@ package cli
 import (
 	"todo-cli/config/configFile"
 	"todo-cli/db"
-	"todo-cli/models"
 	"todo-cli/services/llmService"
 	"todo-cli/services/tasksService"
 
@@ -24,7 +23,6 @@ type model struct {
 	llmService   *llmService.LlmService
 	features     configFile.Features
 	dbContext    db.Context
-	tasks        []models.Task
 	cursor       int
 	viewContext  viewContext
 	textInput    textinput.Model

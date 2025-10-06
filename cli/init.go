@@ -38,7 +38,6 @@ func initialModel(
 
 	return model{
 		tasksService: tasksService,
-		tasks:        tasksService.GetTasks(),
 		dbContext:    dbContext,
 		viewContext:  viewTasks,
 		textInput:    textInput,
