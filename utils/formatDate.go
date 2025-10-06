@@ -5,13 +5,9 @@ import (
 	"time"
 )
 
-func FormatDateToString(t *time.Time) *string {
-	if t == nil {
-		return nil
-	}
+func FormatDateToString(t time.Time) string {
 	weekday := t.Weekday().String()
 	day := t.Day()
 	month := t.Month().String()
-	result := fmt.Sprintf("%s %d of %s", weekday, day, month)
-	return &result
+	return fmt.Sprintf("%s %d of %s", weekday, day, month)
 }

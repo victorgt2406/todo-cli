@@ -6,5 +6,10 @@ import (
 )
 
 func (m model) getTasks() []models.Task {
-	return m.tasksService.GetTasks(s.TaskFilter{}, s.OrderBy{})
+	doneAsc := true
+	todoDateAsc := true
+	return m.tasksService.GetTasks(s.TaskFilter{}, s.OrderBy{
+		DoneAsc:     &doneAsc,
+		TodoDateAsc: &todoDateAsc,
+	})
 }

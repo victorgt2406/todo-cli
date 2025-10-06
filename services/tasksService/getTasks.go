@@ -11,6 +11,7 @@ type TaskFilter struct {
 }
 
 type OrderBy struct {
+	DoneAsc      *bool
 	CreatedAtAsc *bool
 	TodoDateAsc  *bool
 }
@@ -34,12 +35,14 @@ func applyFilters(query *gorm.DB, filter TaskFilter) *gorm.DB {
 }
 
 func applySorting(query *gorm.DB, orderBy OrderBy) *gorm.DB {
-	if orderBy.CreatedAtAsc != nil {
-		query = query.Order("created_at " + ascDescToStr(*orderBy.CreatedAtAsc))
+	if orderBy.DoneAsc != nil {
+		query = query.Order("is_done " + ascDescToStr(*orderBy.DoneAsc))
 	}
-
 	if orderBy.TodoDateAsc != nil {
 		query = query.Order("todo_date " + ascDescToStr(*orderBy.TodoDateAsc))
+	}
+	if orderBy.CreatedAtAsc != nil {
+		query = query.Order("created_at " + ascDescToStr(*orderBy.CreatedAtAsc))
 	}
 
 	return query
