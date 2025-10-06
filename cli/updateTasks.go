@@ -1,12 +1,15 @@
 package cli
 
 import (
+	"todo-cli/models"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type UpdateTasks struct{}
 
 func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
+	tasks := m.getTasks()
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
@@ -19,41 +22,42 @@ func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "down", "j", "J":
-			if m.cursor < len(m.tasks)-1 {
+			if m.cursor < len(tasks)-1 {
 				m.cursor++
 			}
 
 		case " ":
-			if len(m.tasks) > 0 {
-				m.tasks[m.cursor].IsDone = !m.tasks[m.cursor].IsDone
-				m.tasksService.UpdateTask(m.tasks[m.cursor])
+			if len(tasks) > 0 {
+				tasks[m.cursor].IsDone = !tasks[m.cursor].IsDone
+				m.tasksService.UpdateTask(tasks[m.cursor])
 			}
 
 		case "n", "N":
-			m.viewContext = viewNewTask
+			m.viewContext = models.ViewNewTask
 			m.textInput.SetValue("")
 			m.textInput.Focus()
 
 		case "e", "E":
-			if len(m.tasks) > 0 {
-				m.viewContext = viewEditTask
-				m.textInput.SetValue(m.tasks[m.cursor].Description)
+			if len(tasks) > 0 {
+				m.viewContext = models.ViewEditTask
+				m.textInput.SetValue(tasks[m.cursor].Description)
 				m.textInput.Focus()
 			}
 		case "d", "delete":
-			if len(m.tasks) > 0 {
-				m.tasksService.DeleteTask(m.tasks[m.cursor])
+			if len(tasks) > 0 {
+				m.tasksService.DeleteTask(tasks[m.cursor])
 				m.cursor--
-				m.tasks = m.tasksService.GetTasks()
 
 				if m.cursor < 0 {
 					m.cursor = 0
 				}
 
 			}
+		case "D":
+			m.tasksService.DeleteCompletedTasks()
+			m.cursor = 0
 		}
 	case UpdateTasks:
-		m.tasks = m.tasksService.GetTasks()
 	}
 	return m, nil
 }

@@ -8,42 +8,31 @@ import (
 	"todo-cli/services/llmService"
 	"todo-cli/services/tasksService"
 
-	"github.com/charmbracelet/bubbles/textinput"
 	tea "github.com/charmbracelet/bubbletea"
 	"gorm.io/gorm"
 )
 
-// Start the cli
-func Start(db *gorm.DB, context db.Context, config configFile.ConfigFile) {
-	tasksService := tasksService.InitTaskService(db)
-	llmService := llmService.InitLlmService(config.LlmProvider)
-
-	p := tea.NewProgram(initialModel(tasksService, context, &llmService, config.Features))
-
-	if _, err := p.Run(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v", err)
-		os.Exit(1)
-	}
+type TodoCliStartProps struct {
+	Db        *gorm.DB
+	DbContext db.Context
+	Config    configFile.ConfigFile
 }
 
-// Initial state of the cli
-func initialModel(
-	tasksService tasksService.TasksService,
-	dbContext db.Context,
-	llmService *llmService.LlmService,
-	features configFile.Features,
-) model {
-	textInput := textinput.New()
-	textInput.Prompt = ""
+// Start the cli
+func Start(p TodoCliStartProps) {
+	tasksService := tasksService.InitTaskService(p.Db)
+	llmService := llmService.InitLlmService(p.Config.LlmProvider)
 
-	return model{
+	cli := tea.NewProgram(initModel(initModelProps{
 		tasksService: tasksService,
-		tasks:        tasksService.GetTasks(),
-		dbContext:    dbContext,
-		viewContext:  viewTasks,
-		textInput:    textInput,
-		llmService:   llmService,
-		features:     features,
+		dbContext:    p.DbContext,
+		llmService:   &llmService,
+		features:     p.Config.Features,
+	}))
+
+	if _, err := cli.Run(); err != nil {
+		fmt.Printf("Alas, there's been an error: %v", err)
+		os.Exit(1)
 	}
 }
 
