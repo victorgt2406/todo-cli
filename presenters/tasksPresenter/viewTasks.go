@@ -106,7 +106,7 @@ func (t TasksPresenter) newTaskInput(textInput textinput.Model) string {
 }
 
 func (t TasksPresenter) footer() string {
-	return utils.Styles["footer"].Render("q: quit | n: new task | e: edit | <space>: toggle completion")
+	return utils.Styles["footer"].Render("q: quit | n: new task | e: edit | d: delete | D: delete completed | <space>: toggle completion")
 }
 
 func (t TasksPresenter) title() string {

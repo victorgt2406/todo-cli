@@ -53,6 +53,9 @@ func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 				}
 
 			}
+		case "D":
+			m.tasksService.DeleteCompletedTasks()
+			m.cursor = 0
 		}
 	case UpdateTasks:
 	}
