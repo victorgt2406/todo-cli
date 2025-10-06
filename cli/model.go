@@ -3,19 +3,12 @@ package cli
 import (
 	"todo-cli/config/configFile"
 	"todo-cli/db"
-	tasksPresenter "todo-cli/presenters/tasks"
+	"todo-cli/models"
+	tp "todo-cli/presenters/tasksPresenter"
 	"todo-cli/services/llmService"
 	"todo-cli/services/tasksService"
 
 	"github.com/charmbracelet/bubbles/textinput"
-)
-
-type viewContext string
-
-const (
-	viewNewTask  viewContext = "newTask"
-	viewEditTask viewContext = "editTask"
-	viewTasks    viewContext = "tasks"
 )
 
 // The model is where the state of the cli is stored
@@ -24,12 +17,12 @@ type model struct {
 	tasksService tasksService.TasksService
 	llmService   *llmService.LlmService
 	// Presenters
-	tasksPresenter tasksPresenter.TasksPresenter
+	tasksPresenter tp.TasksPresenter
 	// Features
 	features configFile.Features
 	// UI
 	cursor      int
-	viewContext viewContext
+	viewContext models.ViewContext
 	textInput   textinput.Model
 }
 
@@ -45,11 +38,11 @@ func initModel(
 ) model {
 	textInput := textinput.New()
 	textInput.Prompt = ""
-	tasksPresenter := tasksPresenter.InitTasksPresenter(p.dbContext)
+	tasksPresenter := tp.InitTasksPresenter(p.dbContext)
 
 	return model{
 		tasksService:   p.tasksService,
-		viewContext:    viewTasks,
+		viewContext:    models.ViewTasks,
 		textInput:      textInput,
 		llmService:     p.llmService,
 		features:       p.features,

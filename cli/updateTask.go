@@ -11,14 +11,14 @@ func (m model) updateTask(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "esc":
-			m.viewContext = viewTasks
+			m.viewContext = models.ViewTasks
 			m.textInput.SetValue("")
 			return m, nil
 		case "enter":
 			switch m.viewContext {
-			case viewNewTask:
+			case models.ViewNewTask:
 				return m.handleNewTask()
-			case viewEditTask:
+			case models.ViewEditTask:
 				return m.handleEditTask()
 			}
 		}
@@ -45,7 +45,7 @@ func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 		}
 	}
 
-	m.viewContext = viewTasks
+	m.viewContext = models.ViewTasks
 	m.textInput.SetValue("")
 
 	return m, tea.Batch(
@@ -72,7 +72,7 @@ func (m model) handleEditTask() (tea.Model, tea.Cmd) {
 		}
 	}
 
-	m.viewContext = viewTasks
+	m.viewContext = models.ViewTasks
 	m.textInput.SetValue("")
 
 	return m, tea.Batch(

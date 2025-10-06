@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"todo-cli/models"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -31,13 +33,13 @@ func (m model) updateTasks(msg tea.Msg) (tea.Model, tea.Cmd) {
 			}
 
 		case "n", "N":
-			m.viewContext = viewNewTask
+			m.viewContext = models.ViewNewTask
 			m.textInput.SetValue("")
 			m.textInput.Focus()
 
 		case "e", "E":
 			if len(tasks) > 0 {
-				m.viewContext = viewEditTask
+				m.viewContext = models.ViewEditTask
 				m.textInput.SetValue(tasks[m.cursor].Description)
 				m.textInput.Focus()
 			}

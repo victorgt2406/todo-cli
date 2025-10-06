@@ -1,8 +1,15 @@
 package cli
 
+import tasksPresenter "todo-cli/presenters/tasksPresenter"
+
 func (m model) View() string {
 	switch m.viewContext {
 	default:
-		return m.viewTasks()
+		return m.tasksPresenter.ViewTasks(tasksPresenter.ViewTasksProps{
+			ViewContext: m.viewContext,
+			Cursor:      m.cursor,
+			Tasks:       m.getTasks(),
+			TextInput:   m.textInput,
+		})
 	}
 }

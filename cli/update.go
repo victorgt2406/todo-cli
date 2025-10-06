@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"todo-cli/models"
+
 	tea "github.com/charmbracelet/bubbletea"
 )
 
@@ -12,7 +14,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	}
-	if m.viewContext == viewNewTask || m.viewContext == viewEditTask {
+	if m.viewContext == models.ViewNewTask || m.viewContext == models.ViewEditTask {
 		return m.updateTask(msg)
 	}
 	return m.updateTasks(msg)

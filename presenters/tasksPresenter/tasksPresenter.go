@@ -11,7 +11,7 @@ import (
 type ViewTasksProps struct {
 	Tasks       []models.Task
 	Cursor      int
-	ViewContext viewContext
+	ViewContext models.ViewContext
 	TextInput   textinput.Model
 }
 
@@ -25,11 +25,11 @@ func (t TasksPresenter) ViewTasks(p ViewTasksProps) string {
 		checked := " "   // not selected
 		description := task.Description
 		todoDate := utils.FormatDateToString(task.TodoDate)
-		selected := p.Cursor == i && p.ViewContext != viewNewTask
+		selected := p.Cursor == i && p.ViewContext != models.ViewNewTask
 
 		if selected {
 			strCursor = ">" // cursor!
-			if p.ViewContext == viewEditTask {
+			if p.ViewContext == models.ViewEditTask {
 				description = p.TextInput.View()
 			}
 		}
@@ -46,7 +46,7 @@ func (t TasksPresenter) ViewTasks(p ViewTasksProps) string {
 		s += "\n"
 	}
 
-	if p.ViewContext == viewNewTask {
+	if p.ViewContext == models.ViewNewTask {
 		p.TextInput.Prompt = "> [ ] "
 		s += p.TextInput.View() + "\n"
 
