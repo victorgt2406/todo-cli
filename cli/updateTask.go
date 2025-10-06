@@ -2,6 +2,7 @@ package cli
 
 import (
 	"todo-cli/models"
+	s "todo-cli/services/tasksService"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -33,12 +34,13 @@ func (m model) updateTask(msg tea.Msg) (tea.Model, tea.Cmd) {
 func (m model) handleNewTask() (tea.Model, tea.Cmd) {
 	description := m.textInput.Value()
 	var taskToAnalize *models.Task = nil
-	tasks := m.getTasks()
 
 	if description != "" {
 		newTask := m.tasksService.CreateTask(description)
-		tasks = append(tasks, newTask)
-		m.cursor = len(tasks) - 1
+		isDone := false
+		m.cursor = len(m.tasksService.GetTasks(s.TaskFilter{
+			IsDone: &isDone,
+		}, s.OrderBy{})) - 1
 
 		if m.features.SmartTask {
 			taskToAnalize = &newTask

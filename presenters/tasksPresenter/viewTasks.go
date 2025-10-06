@@ -9,16 +9,16 @@ import (
 	"github.com/charmbracelet/bubbles/textinput"
 )
 
-type ViewTasksProps struct {
+type RenderProps struct {
 	Tasks       []models.Task
 	Cursor      int
 	ViewContext models.ViewContext
 	TextInput   textinput.Model
 }
 
-func (t TasksPresenter) ViewTasks(p ViewTasksProps) string {
+func (t TasksPresenter) Render(p RenderProps) string {
 	// The header
-	s := "Todo List\n\n"
+	s := fmt.Sprintf("%s\n\n", t.title())
 
 	// Tasks list
 	isCompletedTasks := false
@@ -28,10 +28,14 @@ func (t TasksPresenter) ViewTasks(p ViewTasksProps) string {
 			description = p.TextInput.View()
 		}
 		if task.IsDone && !isCompletedTasks {
+			if p.ViewContext == models.ViewNewTask {
+				p.TextInput.Prompt = "> [ ] "
+				s += p.TextInput.View() + "\n"
+			}
 			s += "\nCompleted Tasks:\n"
 			isCompletedTasks = true
 		}
-		s += t.viewTask(viewTaskProps{
+		s += t.task(taskProps{
 			description: description,
 			todoDate:    task.TodoDate,
 			isDone:      task.IsDone,
@@ -41,20 +45,14 @@ func (t TasksPresenter) ViewTasks(p ViewTasksProps) string {
 		s += "\n"
 	}
 
-	if p.ViewContext == models.ViewNewTask {
-		p.TextInput.Prompt = "> [ ] "
-		s += p.TextInput.View() + "\n"
-
-	}
-
 	// The footer
-	s += "\nPress q to quit. Press n to add a new task. Press e to edit selected task. Press space to toggle completion.\n"
+	s += fmt.Sprintf("\n%s\n", t.footer())
 
 	// Send the UI for rendering
 	return s
 }
 
-type viewTaskProps struct {
+type taskProps struct {
 	description string
 	todoDate    *time.Time
 	isDone      bool
@@ -62,7 +60,7 @@ type viewTaskProps struct {
 	viewContext models.ViewContext
 }
 
-func (t TasksPresenter) viewTask(p viewTaskProps) string {
+func (t TasksPresenter) task(p taskProps) string {
 	s := ""
 
 	strCursor := " "
@@ -80,6 +78,27 @@ func (t TasksPresenter) viewTask(p viewTaskProps) string {
 	if p.todoDate != nil {
 		s += fmt.Sprintf(" 📅 %s", utils.FormatDateToString(*p.todoDate))
 	}
-
+	if p.selected {
+		if p.isDone {
+			s = utils.Styles["selectedChecked"].Render(s)
+		} else {
+			s = utils.Styles["selectedNotChecked"].Render(s)
+		}
+	} else {
+		if p.isDone {
+			s = utils.Styles["checked"].Render(s)
+		} else {
+			s = utils.Styles["notChecked"].Render(s)
+		}
+	}
+	s = utils.Styles["task"].Render(s)
 	return s
+}
+
+func (t TasksPresenter) footer() string {
+	return utils.Styles["footer"].Render("q: quit | n: new task | e: edit | <space>: toggle completion")
+}
+
+func (t TasksPresenter) title() string {
+	return utils.Styles["title"].Render("Todo List")
 }
