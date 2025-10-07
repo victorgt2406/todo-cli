@@ -11,8 +11,10 @@ class Task {
 function AnalizeTask(todaysDate: string, taskDescription: string) -> Task {
   client "TogetherLlama3_3_70bTurbo"
   prompt #"
-    Today is {{todaysDate}}
+    {{ _.role("system") }}
+    Today is {{todaysDate}}.
 
+    {{ _.role("user")}}
     From the following task extract the following information:
 
     {{ taskDescription }}
