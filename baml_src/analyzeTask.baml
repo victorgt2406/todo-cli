@@ -8,10 +8,11 @@ class Task {
 }
 
 // Create a function to extract the resume from a string.
-function AnalizeTask(todaysDate: string, taskDescription: string) -> Task {
+function AnalizeTask(agentsMd: string | null, todaysDate: string, taskDescription: string) -> Task {
   client "TogetherLlama3_3_70bTurbo"
   prompt #"
     {{ _.role("system") }}
+    {{ agentsMd }}
     Today is {{todaysDate}}.
 
     {{ _.role("user")}}
@@ -48,7 +49,14 @@ test byGroceries {
 test meetingWithJohn {
   functions [AnalizeTask]
   args {
+    agentsMd #"
+    You are an assistant to help correct the grammar of the task description 
+    and detect the date of the task. If the date is not provided, return null.
+
+    * The description corrected must use the same language as the task description.
+
+    "#
     todaysDate "saturday 2025-10-04"
-    taskDescription #"Meeting with John next thursday"#
+    taskDescription #"Reunión con Ignacio el siguiente lunes"#
   }
 }

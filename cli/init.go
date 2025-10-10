@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"todo-cli/config/agentsMd"
 	"todo-cli/config/configFile"
 	"todo-cli/db"
 	"todo-cli/services/llmService"
@@ -16,12 +17,16 @@ type TodoCliStartProps struct {
 	Db        *gorm.DB
 	DbContext db.Context
 	Config    configFile.ConfigFile
+	AgentsMd  agentsMd.AgentsMd
 }
 
 // Start the cli
 func Start(p TodoCliStartProps) {
 	tasksService := tasksService.InitTaskService(p.Db)
-	llmService := llmService.InitLlmService(p.Config.LlmProvider)
+	llmService := llmService.InitLlmService(llmService.InitLlmServiceProps{
+		LlmProvider: p.Config.LlmProvider,
+		AgentsMd:    p.AgentsMd,
+	})
 
 	cli := tea.NewProgram(initModel(initModelProps{
 		tasksService: tasksService,

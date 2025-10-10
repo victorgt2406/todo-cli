@@ -14,6 +14,7 @@ func (llmService LlmService) AnalizeTask(task models.Task) models.Task {
 
 	analizedTask, err := b.AnalizeTask(
 		ctx,
+		llmService.agentsMd.Content,
 		time.Now().Format("Monday 2006-01-02"),
 		task.Description,
 		b.WithClientRegistry(llmService.clientRegistry),

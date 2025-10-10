@@ -3,6 +3,7 @@ package main
 import (
 	"todo-cli/cli"
 	"todo-cli/commands"
+	"todo-cli/config/agentsMd"
 	"todo-cli/config/configFile"
 	"todo-cli/db"
 	_ "todo-cli/internal/env"
@@ -11,12 +12,14 @@ import (
 func main() {
 	db, dbContext := db.InitDb()
 	config := configFile.LoadConfig()
-	command := commands.Init(db, dbContext, config)
+	agentsMd := agentsMd.ReadAgentsMd()
+	command := commands.Init(db, dbContext, config, agentsMd)
 	if !command.IsCommand() {
 		cli.Start(cli.TodoCliStartProps{
 			Db:        db,
 			DbContext: dbContext,
 			Config:    config,
+			AgentsMd:  agentsMd,
 		})
 	}
 }
