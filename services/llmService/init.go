@@ -1,19 +1,22 @@
 package llmService
 
 import (
+	"todo-cli/config/agentsMd"
 	"todo-cli/config/configFile"
 
 	baml "github.com/boundaryml/baml/engine/language_client_go/pkg"
 )
 
-type LlmService struct {
-	clientRegistry *baml.ClientRegistry
+type InitLlmServiceProps struct {
+	LlmProvider configFile.LlmProvider
+	AgentsMd    agentsMd.AgentsMd
 }
 
-func InitLlmService(llmProvider configFile.LlmProvider) LlmService {
-	clientRegistery := createCustomClientRegistry(llmProvider)
+func InitLlmService(p InitLlmServiceProps) LlmService {
+	clientRegistery := createCustomClientRegistry(p.LlmProvider)
 	return LlmService{
 		clientRegistry: clientRegistery,
+		agentsMd:       p.AgentsMd,
 	}
 }
 

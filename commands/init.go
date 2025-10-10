@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"todo-cli/config/agentsMd"
 	"todo-cli/config/configFile"
 	"todo-cli/db"
 	"todo-cli/services/llmService"
@@ -20,11 +21,15 @@ func Init(
 	db *gorm.DB,
 	dbContext db.Context,
 	config configFile.ConfigFile,
+	agentsMd agentsMd.AgentsMd,
 ) Command {
 	return Command{
 		tasksService: tasksService.InitTaskService(db),
-		llmService:   llmService.InitLlmService(config.LlmProvider),
-		features:     config.Features,
-		dbContext:    dbContext,
+		llmService: llmService.InitLlmService(llmService.InitLlmServiceProps{
+			LlmProvider: config.LlmProvider,
+			AgentsMd:    agentsMd,
+		}),
+		features:  config.Features,
+		dbContext: dbContext,
 	}
 }
