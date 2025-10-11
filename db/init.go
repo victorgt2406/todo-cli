@@ -3,6 +3,7 @@ package db
 import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Context string
@@ -39,7 +40,9 @@ func whichDatabase() (string, Context, bool) {
 }
 
 func openDatabase(dbPath string) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(dbPath), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
 	if err != nil {
 		panic("Error when opening the database: " + err.Error())
 	}
