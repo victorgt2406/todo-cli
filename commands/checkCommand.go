@@ -8,7 +8,7 @@ import (
 func (command Command) IsCommand() bool {
 	args := getArgs()
 	if anyArgs(args) {
-		if !handleRegisteredCommand(args[0]) {
+		if !command.handleRegisteredCommand(args[0], args[1:]) {
 
 			description := strings.Join(args, " ")
 			task := command.tasksService.CreateTask(description)

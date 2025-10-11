@@ -54,7 +54,7 @@ jobs:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
-          go build -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
+          go build -ldflags "-X todo-cli/commands.Version=${{ github.ref_name }}" -o ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }} main.go
 
       - name: Verify build output
         run: test -f ./bin/todo-cli-${{ matrix.goos }}-${{ matrix.goarch }}

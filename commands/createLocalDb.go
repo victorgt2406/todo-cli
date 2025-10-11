@@ -5,7 +5,7 @@ import (
 	"todo-cli/db"
 )
 
-func createLocalDb() {
+func (command Command) createLocalDb(args []string) {
 	fmt.Println("Creating local database...")
 	db.CreateDb(db.LocalDbPath())
 	fmt.Println("\nLocal database created!")
