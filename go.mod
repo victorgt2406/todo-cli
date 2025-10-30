@@ -3,7 +3,7 @@ module todo-cli
 go 1.25.0
 
 require (
-	github.com/boundaryml/baml v0.211.0
+	github.com/boundaryml/baml v0.212.0
 	github.com/charmbracelet/bubbletea v1.3.10
 	gorm.io/driver/sqlite v1.6.0
 	gorm.io/gorm v1.31.0
@@ -11,7 +11,6 @@ require (
 
 require (
 	github.com/atotto/clipboard v0.1.4 // indirect
-	github.com/joho/godotenv v1.5.1 // indirect
 	google.golang.org/protobuf v1.36.10 // indirect
 )
 
